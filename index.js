@@ -11,7 +11,7 @@ const defaultSetupRoles = {
 }
 
 const defaultSpecialRoles = {
-    10:['merlin', 'assassin', 'percival', 'mordred', 'morgana', 'oberon'], // balance
+    10: ['merlin', 'assassin', 'percival', 'mordred', 'morgana', 'oberon'], // balance
     9: ['merlin', 'assassin', 'percival', 'mordred', 'morgana'], // weaken the good (by removing oberon)
     8: ['merlin', 'assassin', 'percival', 'mordred', 'morgana'], // balance
     7: ['merlin', 'assassin', 'percival', 'mordred-or-morgana'], // weaken the evil
@@ -97,7 +97,7 @@ router.post('/slack/slash', async request => {
         console.log('LOG payload:', payload)
         console.log('LOG payload:', JSON.stringify(payload, null, 2))
 
-        const text = payload.text;
+        const text = payload.text
         var rePattern = new RegExp(/@\S+/gm)
         var userFromText = text.match(rePattern)
         if (!userFromText) userFromText = []
@@ -128,13 +128,12 @@ router.post('/slack/slash', async request => {
             month: 'short',
             day: 'numeric',
         }
-        const dateString = currentDate.toLocaleDateString(
-            'en-us',
-            dateOptions
-        );
+        const dateString = currentDate.toLocaleDateString('en-us', dateOptions)
         let responseMessage = `:crossed_swords: *Starting a new Avalon Game* (${dateString}) :crossed_swords:\n\n`
 
-        const setup = JSON.parse(JSON.stringify(defaultSetupRoles[numberOfPlayers]))
+        const setup = JSON.parse(
+            JSON.stringify(defaultSetupRoles[numberOfPlayers])
+        )
         const specialRoles = JSON.parse(
             JSON.stringify(defaultSpecialRoles[numberOfPlayers])
         )
