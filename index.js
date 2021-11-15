@@ -177,13 +177,92 @@ router.post('/slack/slash', async request => {
             `:large_blue_circle: Special Good characters: ${goods}.\n`
 
         const shuffled_users = _.shuffle(users)
-        setup.forEach(async (role) => {
+        const players = []
+        const evilsWithoutMordred = []
+        const evilsWithoutOberon = []
+        let mordred = false
+        let oberon = false
+        const merlinAndMorgana = []
+        setup.forEach(async role => {
             const user = shuffled_users.pop()
-            console.log(`LOG user: ${user} is ${role}, message: ${privateMessages[role]}`)
-            await sendSlackMessage(user, privateMessages[role] + `(${dateString}) \n ------- \n`)
+            players.push({
+                role,
+                user,
+            })
+            console.log(`LOG user: ${user} is ${role}`)
+
+            switch (role) {
+                case 'merlin':
+                    merlinAndMorgana.push(user)
+                    break
+                case 'morgana':
+                    evilsWithoutMordred.push(user)
+                    evilsWithoutOberon.push(user)
+                    merlinAndMorgana.push(user)
+                    break
+                case 'assassin':
+                case 'evil':
+                    evilsWithoutMordred.push(user)
+                    evilsWithoutOberon.push(user)
+                    break
+                case 'mordred':
+                    mordred = true
+                    evilsWithoutOberon.push(user)
+                    break
+                case 'oberon':
+                    oberon = true
+                    evilsWithoutMordred.push(user)
+                    break
+            }
         })
 
-        await sendSlackMessage('#avalon', responseMessage);
+        players.forEach(async player => {
+            let message = privateMessages[player.role]
+            const evilPlayersWithoutMordred =
+                evilsWithoutMordred.length > 1
+                    ? evilsWithoutMordred.join(', ')
+                    : evilsWithoutMordred[0]
+            const evilPlayersWithoutOberon =
+                evilsWithoutOberon.length > 1
+                    ? evilsWithoutOberon.join(', ')
+                    : evilsWithoutOberon[0]
+            switch (player.role) {
+                case 'merlin':
+                    message =
+                        message + '\nEvils are: ' + evilPlayersWithoutMordred + ' '
+                    if (mordred)
+                        message =
+                            message +
+                            '. \nMordred is with the evils, but hidden. '
+                    break
+                case 'percival':
+                    if (merlinAndMorgana.length === 1) {
+                        message = message + '\nMerlin is ' + merlinAndMorgana[0] + ' '
+                    } else {
+                        message =
+                            message +
+                            '\nEither ' +
+                            merlinAndMorgana.join(' or ') +
+                            ' could be Merlin. '
+                    }
+                    break
+                case 'assassin':
+                case 'morgana':
+                case 'mordred':
+                case 'evil':
+                    message =
+                        message + '\nEvils are: ' + evilPlayersWithoutOberon + ' '
+                    if (oberon)
+                        message =
+                            message + '. \nOberon is in your team, but hidden. '
+                    break
+            }
+            message = message + `\n(${dateString}) \n ------- \n`
+            console.log(`LOG message: ${message}`)
+            await sendSlackMessage(player.user, message)
+        })
+
+        await sendSlackMessage('#avalon', responseMessage)
         return new Response(responseMessage)
     }
 
