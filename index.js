@@ -45,6 +45,7 @@ const sendSlackMessage = async (channel, text) => {
         channel,
         text,
         username: 'Avalon K9',
+        link_names: true,
         //icon_url: 'https://meepletown.com/wp-content/uploads/2012/08/resistanceavalon.jpg',
         //icon_emoji: ":crossed_swords:",
     }
