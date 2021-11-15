@@ -1,0 +1,11 @@
+name = "avalon-bot"
+type = "webpack"
+
+account_id = "xxxxxxxxxxxxx"
+workers_dev = true
+route = ""
+zone_id = ""
+compatibility_date = "2021-11-09"
+
+[vars]
+SLACK_TOKEN = "xoxb-xxxxx-xxxxxxx-xxxxxxx"
