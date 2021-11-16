@@ -22,22 +22,22 @@ const defaultSpecialRoles = {
 const goodMessage = ':large_blue_circle: Loyal Servent of Arthur'
 const evilMessage = ':red_circle: Minion of Mordred'
 const roleMessges = {
-    assassin: `:dagger_knife: ASSASSIN`,
-    oberon: `:ghost: OBERON`,
-    morgana: `:female_supervillain: MORGANA`,
-    mordred: `:smiling_imp: MORDRED`,
-    percival: `:eyes: PERCIVAL`,
-    merlin: `:angel: MERLIN`,
+    assassin: `:dagger_knife: *ASSASSIN*`,
+    oberon: `:ghost: *OBERON*`,
+    morgana: `:female_supervillain: *MORGANA*`,
+    mordred: `:smiling_imp: *MORDRED*`,
+    percival: `:eyes: *PERCIVAL*`,
+    merlin: `:angel: *MERLIN*`,
 }
 const privateMessages = {
     evil: evilMessage,
     good: goodMessage,
-    assassin: `${roleMessges['assassin']}  ${evilMessage}. You get to assassinate Merlin at the end of the game`,
-    oberon: `${roleMessges['oberon']}  ${evilMessage}. You evil but do not know the other evils`,
-    morgana: `${roleMessges['morgana']}  ${evilMessage}. You play/pose as MERLIN`,
-    mordred: `${roleMessges['mordred']} :red_circle: You are unknown to MERLIN`,
-    percival: `${roleMessges['percival']} ${goodMessage}`,
-    merlin: `${roleMessges['merlin']} ${goodMessage}`,
+    assassin: `${roleMessges['assassin']}  ${evilMessage}. *You get the final decision in the assasination of MERLIN at the end of the game.*`,
+    oberon: `${roleMessges['oberon']}  ${evilMessage}. *You evil but do not know the other evils are.*`,
+    morgana: `${roleMessges['morgana']}  ${evilMessage}. *You play/pose as MERLIN.*`,
+    mordred: `${roleMessges['mordred']} :red_circle: *You are unknown to MERLIN.*`,
+    percival: `${roleMessges['percival']} ${goodMessage}. *You know who MERLIN is.*`,
+    merlin: `${roleMessges['merlin']} ${goodMessage}. *If the evil figured you are MERLIN, they win!*`,
 }
 
 const sendSlackMessage = async (channel, text) => {
