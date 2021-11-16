@@ -24,10 +24,10 @@ const evilMessage = ':red_circle: Minion of Mordred'
 const roleMessges = {
     assassin: `:dagger_knife: *ASSASSIN*`,
     oberon: `:ghost: *OBERON*`,
-    morgana: `:female_supervillain: *MORGANA*`,
+    morgana: `:female_vampire: *MORGANA*`,
     mordred: `:smiling_imp: *MORDRED*`,
     percival: `:eyes: *PERCIVAL*`,
-    merlin: `:angel: *MERLIN*`,
+    merlin: `:male_mage: *MERLIN*`,
 }
 const privateMessages = {
     evil: evilMessage,
