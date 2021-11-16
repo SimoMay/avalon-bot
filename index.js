@@ -1,5 +1,5 @@
 import { Router } from 'itty-router'
-var _ = require('lodash')
+import _ from 'lodash'
 
 const defaultSetupRoles = {
     10:['evil', 'evil', 'evil', 'evil', 'good', 'good', 'good', 'good', 'good', 'good'],
