@@ -10,13 +10,13 @@ This template demonstrates using the [`itty-router`](https://github.com/kwhitley
 
 #### Wrangler
 
-You can use [wrangler](https://github.com/cloudflare/wrangler) to generate a new Cloudflare Workers project based on this template by running the following command from your terminal:
+To start the server:
 
 ```
-wrangler generate myapp https://github.com/cloudflare/worker-template-router
+wrangler dev
 ```
 
-Before publishing your code you need to edit `wrangler.toml` file and add your Cloudflare `account_id` - more information about configuring and publishing your code can be found [in the documentation](https://developers.cloudflare.com/workers/learning/getting-started#7-configure-your-project-for-deployment).
+Before publishing your code you need to edit `wrangler.toml` file and add your Cloudflare `account_id` & `SLACK_TOKEN`.
 
 Once you are ready, you can publish your code by running the following command:
 
