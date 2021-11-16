@@ -270,6 +270,13 @@ router.post('/slack/slash', async request => {
             await sendSlackMessage(player.user, message)
         })
 
+        responseMessage = responseMessage + `Players this round: `
+        const shuffledPlayers = _.shuffle(players)
+        shuffledPlayers.forEach(async player => {
+            responseMessage = responseMessage + ` ${player.user} `
+        })
+        responseMessage = responseMessage + ` \n `
+
         await sendSlackMessage('#avalon', responseMessage)
         return new Response(responseMessage)
     }
