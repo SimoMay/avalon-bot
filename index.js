@@ -40,14 +40,16 @@ const privateMessages = {
     merlin: `${roleMessges['merlin']} ${goodMessage}. *If the evil figured you are MERLIN, they win!*`,
 }
 
+const logJson = (json, name) => {
+    console.log(`LOG ${name}:`, JSON.stringify(json, null, 2))
+}
+
 const sendSlackMessage = async (channel, text) => {
     var message = {
         channel,
         text,
         username: 'Avalon K9',
         link_names: true,
-        //icon_url: 'https://meepletown.com/wp-content/uploads/2012/08/resistanceavalon.jpg',
-        //icon_emoji: ":crossed_swords:",
     }
     const options = {
         method: 'POST',
@@ -58,7 +60,7 @@ const sendSlackMessage = async (channel, text) => {
         },
     }
 
-    console.log('LOG options:', JSON.stringify(options, null, 2))
+    logJson(options, 'options')
 
     return await fetch('https://slack.com/api/chat.postMessage', options)
 }
@@ -94,8 +96,7 @@ router.post('/slack/slash', async request => {
         const formData = await request.formData()
         const payload = Object.fromEntries(formData)
 
-        console.log('LOG payload:', payload)
-        console.log('LOG payload:', JSON.stringify(payload, null, 2))
+        logJson(payload, 'payload')
 
         const text = payload.text
         var rePattern = new RegExp(/@\S+/gm)
@@ -103,14 +104,14 @@ router.post('/slack/slash', async request => {
         if (!userFromText) userFromText = []
         const allUsers = ['@' + payload.user_name, ...userFromText]
 
-        console.log('LOG allUsers:', JSON.stringify(allUsers, null, 2))
+        logJson(allUsers, 'allUsers')
 
         // Remove duplicate users
         const users = allUsers.filter((value, index) => {
             return allUsers.indexOf(value) === index
         })
 
-        console.log('LOG users:', JSON.stringify(users, null, 2))
+        logJson(users, 'users')
 
         if (users.length < 5) {
             return responseError('You need to be at least 5 players!')
@@ -176,15 +177,15 @@ router.post('/slack/slash', async request => {
             responseMessage +
             `:large_blue_circle: Special Good characters: ${goods}.\n`
 
-        const shuffled_users = _.shuffle(users)
+        const shuffledUsers = _.shuffle(users)
         const players = []
         const evilsWithoutMordred = []
         const evilsWithoutOberon = []
+        const merlinAndMorgana = []
         let mordred = false
         let oberon = false
-        const merlinAndMorgana = []
         setup.forEach(async role => {
-            const user = shuffled_users.pop()
+            const user = shuffledUsers.pop()
             players.push({
                 role,
                 user,
@@ -229,21 +230,25 @@ router.post('/slack/slash', async request => {
             switch (player.role) {
                 case 'merlin':
                     message =
-                        message + '\nEvils are: ' + evilPlayersWithoutMordred + ' '
+                        message +
+                        '\nEvils are: ' +
+                        evilPlayersWithoutMordred +
+                        ' '
                     if (mordred)
                         message =
                             message +
-                            '. \nMordred is with the evils, but hidden. '
+                            '. \nMORDERED is with the evils, but hidden. '
                     break
                 case 'percival':
                     if (merlinAndMorgana.length === 1) {
-                        message = message + '\nMerlin is ' + merlinAndMorgana[0] + ' '
+                        message =
+                            message + '\nMERLIN is ' + merlinAndMorgana[0] + ' '
                     } else {
                         message =
                             message +
                             '\nEither ' +
                             merlinAndMorgana.join(' or ') +
-                            ' could be Merlin. '
+                            ' could be MERLIN. '
                     }
                     break
                 case 'assassin':
@@ -251,10 +256,13 @@ router.post('/slack/slash', async request => {
                 case 'mordred':
                 case 'evil':
                     message =
-                        message + '\nEvils are: ' + evilPlayersWithoutOberon + ' '
+                        message +
+                        '\nEvils are: ' +
+                        evilPlayersWithoutOberon +
+                        ' '
                     if (oberon)
                         message =
-                            message + '. \nOberon is in your team, but hidden. '
+                            message + '. \nOBERON is in your team, but hidden. '
                     break
             }
             message = message + `\n(${dateString}) \n ------- \n`
