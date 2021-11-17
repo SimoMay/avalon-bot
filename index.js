@@ -96,17 +96,20 @@ router.get('/', async () => {
 
 router.post('/slack/slash', async request => {
     const contentType = request.headers.get('content-type') || ''
+    // Slack send data in a "form"
     if (contentType.includes('form')) {
         const formData = await request.formData()
         const payload = Object.fromEntries(formData)
 
         logJson(payload, 'payload')
 
+        // "text" field is what the user wrote after the slash command (in this case anything after /avalon)
         const text = payload.text
+        // Regex to retrieve all the mentioned users, they start with @
         var rePattern = new RegExp(/@\S+/gm)
         var userFromText = text.match(rePattern)
         if (!userFromText) userFromText = []
-        const allUsers = ['@' + payload.user_name, ...userFromText]
+        const allUsers = ['@' + payload.user_name, ...userFromText] // payload.user_name is the user who issued the slack command
 
         logJson(allUsers, 'allUsers')
 
@@ -125,8 +128,6 @@ router.post('/slack/slash', async request => {
             return responseError('You cannot be more than 10 players!')
         }
 
-        const numberOfPlayers = users.length
-
         const currentDate = new Date()
         const dateOptions = {
             weekday: 'long',
@@ -137,6 +138,8 @@ router.post('/slack/slash', async request => {
         const dateString = currentDate.toLocaleDateString('en-us', dateOptions)
         let responseMessage = `:crossed_swords: *Starting a new Avalon Game* (${dateString}) :crossed_swords:\n\n`
 
+        const numberOfPlayers = users.length
+        // deep coping these values so we don't mutate the defualts
         const setup = JSON.parse(
             JSON.stringify(defaultSetupRoles[numberOfPlayers])
         )
@@ -149,6 +152,7 @@ router.post('/slack/slash', async request => {
             responseMessage +
             `*${numberOfEvil}* out of *${numberOfPlayers}* players are evil.\n\n`
 
+        // Replacing "evil" & "good" with specialRoles (if needed)
         const goodRoles = []
         const evilRoles = []
         specialRoles.forEach((role, index) => {
@@ -166,6 +170,7 @@ router.post('/slack/slash', async request => {
                     evilRoles.push(roleMessges[role])
                     break
                 case 'mordred-or-morgana':
+                    // randomize which special role will be played this round
                     const random = ['mordred', 'morgana'].random()
                     setup.splice(setup.indexOf('evil'), 1, random)
                     evilRoles.push(roleMessges[random])
@@ -182,13 +187,16 @@ router.post('/slack/slash', async request => {
             responseMessage +
             `:large_blue_circle: Special Good characters: ${goods}.\n`
 
+        // Shuffling the users order
         const shuffledUsers = shuffle(users)
+
         const players = []
         const evilsButMordred = []
         const evilsButOberon = []
         const merlinAndMorgana = []
         let mordred = false
         let oberon = false
+        // Giving each user a role
         setup.forEach(async role => {
             const user = shuffledUsers.pop()
             players.push({
@@ -197,6 +205,7 @@ router.post('/slack/slash', async request => {
             })
             console.log(`LOG user: ${user} is ${role}`)
 
+            // setting up special variables to be used later
             switch (role) {
                 case 'merlin':
                     merlinAndMorgana.push(user)
@@ -230,6 +239,7 @@ router.post('/slack/slash', async request => {
             let message = `You are ${privateMessages[player.role]}`
             switch (player.role) {
                 case 'merlin':
+                    // MERLIN can see all evil players, but not MORDRED
                     message =
                         message +
                         '\nEvils are: ' +
@@ -241,6 +251,7 @@ router.post('/slack/slash', async request => {
                             ' \nMORDERED is with the evils, but hidden. '
                     break
                 case 'percival':
+                    // PERCIVAL can see who MERLIN is, if MORGANA playing then will see both
                     if (merlinAndMorgana.length === 1) {
                         message =
                             message + '\nMERLIN is ' + merlinAndMorgana[0] + ' '
@@ -257,6 +268,7 @@ router.post('/slack/slash', async request => {
                 case 'morgana':
                 case 'mordred':
                 case 'evil':
+                    // All evils (exluding OBERON) see each others, except the evil OBERON sees no one
                     message =
                         message +
                         '\nEvils are: ' +
@@ -268,10 +280,14 @@ router.post('/slack/slash', async request => {
                     break
             }
             message = message + `\n(${dateString}) \n ------- \n`
+
             console.log(`LOG message: ${player.user} -> ${message}`)
+
+            // Sending a private message to each user with their specific role message
             await sendSlackMessage(player.user, message)
         })
 
+        // Making a list of who's playing this round (shuffling them again)
         responseMessage = responseMessage + `Players this round: `
         const shuffledPlayers = shuffle(players)
         shuffledPlayers.forEach(async player => {
@@ -284,15 +300,13 @@ router.post('/slack/slash', async request => {
         return new Response(responseMessage)
     }
 
-    // Serialise the JSON to a string.
+    // If we didn't get a "form", respond with an error
     return responseError('Something wrong happend!')
 })
 
 /*
-This is the last route we define, it will match anything that hasn't hit a route we've defined
+This route will match anything that hasn't hit a route we've defined
 above, therefore it's useful as a 404 (and avoids us hitting worker exceptions, so make sure to include it!).
-
-Visit any page that doesn't exist (e.g. /foobar) to see it in action.
 */
 router.all('*', () => new Response('404, not found!', { status: 404 }))
 
