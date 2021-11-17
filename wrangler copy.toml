@@ -9,3 +9,6 @@ compatibility_date = "2021-11-09"
 
 [vars]
 SLACK_TOKEN = "xoxb-xxxxx-xxxxxxx-xxxxxxx"
+BROADCAST_SLACK_CHANNEL = "#avalon"
+MIN_PLAYERS = "5"
+MAX_PLAYERS = "10"

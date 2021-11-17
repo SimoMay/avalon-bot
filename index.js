@@ -117,10 +117,11 @@ router.post('/slack/slash', async request => {
 
         logJson(users, 'users')
 
-        if (users.length < 5) {
+        // Game validation, Avalon has min 5 players and 10 max
+        if (users.length < parseInt(MIN_PLAYERS)) {
             return responseError('You need to be at least 5 players!')
         }
-        if (users.length > 10) {
+        if (users.length > parseInt(MAX_PLAYERS)) {
             return responseError('You cannot be more than 10 players!')
         }
 
@@ -278,7 +279,8 @@ router.post('/slack/slash', async request => {
         })
         responseMessage = responseMessage + ` \n `
 
-        await sendSlackMessage('#avalon', responseMessage)
+        // Broadcasting the message in the main channel
+        await sendSlackMessage(BROADCAST_SLACK_CHANNEL, responseMessage)
         return new Response(responseMessage)
     }
 
