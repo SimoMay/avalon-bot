@@ -32,11 +32,11 @@ const roleMessges = {
 const privateMessages = {
     evil: evilMessage,
     good: goodMessage,
-    assassin: `${roleMessges['assassin']}  ${evilMessage}. *You get the final decision in the assasination of MERLIN at the end of the game.*`,
+    assassin: `${roleMessges['assassin']}  ${evilMessage}. *You get the final decision in the assasination of MERLIN.*`,
     oberon: `${roleMessges['oberon']}  ${evilMessage}. *You evil but do not know the other evils are.*`,
-    morgana: `${roleMessges['morgana']}  ${evilMessage}. *You play/pose as MERLIN.*`,
+    morgana: `${roleMessges['morgana']}  ${evilMessage}. *You act/pose as MERLIN.*`,
     mordred: `${roleMessges['mordred']} :red_circle: *You are unknown to MERLIN.*`,
-    percival: `${roleMessges['percival']} ${goodMessage}. *You know who MERLIN is.*`,
+    percival: `${roleMessges['percival']} ${goodMessage}. *You know who is MERLIN.*`,
     merlin: `${roleMessges['merlin']} ${goodMessage}. *If the evil figured you are MERLIN, they win!*`,
 }
 
