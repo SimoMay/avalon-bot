@@ -11,7 +11,7 @@ const defaultSetupRoles = {
 }
 
 const defaultSpecialRoles = {
-    10: ['merlin', 'assassin', 'percival', 'mordred', 'morgana', 'oberon'], // balance
+    10:['merlin', 'assassin', 'percival', 'mordred', 'morgana', 'oberon'], // balance
     9: ['merlin', 'assassin', 'percival', 'mordred', 'morgana'], // weaken the good (by removing oberon)
     8: ['merlin', 'assassin', 'percival', 'mordred', 'morgana'], // balance
     7: ['merlin', 'assassin', 'percival', 'mordred-or-morgana'], // weaken the evil
@@ -32,9 +32,9 @@ const roleMessges = {
 const privateMessages = {
     evil: evilMessage,
     good: goodMessage,
-    assassin: `${roleMessges['assassin']}  ${evilMessage}. *You get the final decision in the assasination of MERLIN.*`,
-    oberon: `${roleMessges['oberon']}  ${evilMessage}. *You evil but do not know the other evils are.*`,
-    morgana: `${roleMessges['morgana']}  ${evilMessage}. *You act/pose as MERLIN.*`,
+    assassin: `${roleMessges['assassin']} ${evilMessage}. *You get the final decision in the assasination of MERLIN.*`,
+    oberon: `${roleMessges['oberon']} ${evilMessage}. *You evil but do not know the other evils are.*`,
+    morgana: `${roleMessges['morgana']} ${evilMessage}. *You act/pose as MERLIN.*`,
     mordred: `${roleMessges['mordred']} :red_circle: *You are unknown to MERLIN.*`,
     percival: `${roleMessges['percival']} ${goodMessage}. *You know who is MERLIN.*`,
     merlin: `${roleMessges['merlin']} ${goodMessage}. *If the evil figured you are MERLIN, they win!*`,
@@ -183,8 +183,8 @@ router.post('/slack/slash', async request => {
 
         const shuffledUsers = shuffle(users)
         const players = []
-        const evilsWithoutMordred = []
-        const evilsWithoutOberon = []
+        const evilsButMordred = []
+        const evilsButOberon = []
         const merlinAndMorgana = []
         let mordred = false
         let oberon = false
@@ -201,42 +201,38 @@ router.post('/slack/slash', async request => {
                     merlinAndMorgana.push(user)
                     break
                 case 'morgana':
-                    evilsWithoutMordred.push(user)
-                    evilsWithoutOberon.push(user)
+                    evilsButMordred.push(user)
+                    evilsButOberon.push(user)
                     merlinAndMorgana.push(user)
                     break
                 case 'assassin':
                 case 'evil':
-                    evilsWithoutMordred.push(user)
-                    evilsWithoutOberon.push(user)
+                    evilsButMordred.push(user)
+                    evilsButOberon.push(user)
                     break
                 case 'mordred':
                     mordred = true
-                    evilsWithoutOberon.push(user)
+                    evilsButOberon.push(user)
                     break
                 case 'oberon':
                     oberon = true
-                    evilsWithoutMordred.push(user)
+                    evilsButMordred.push(user)
                     break
             }
         })
 
         players.forEach(async player => {
-            let message = privateMessages[player.role]
-            const evilPlayersWithoutMordred =
-                evilsWithoutMordred.length > 1
-                    ? evilsWithoutMordred.join(', ')
-                    : evilsWithoutMordred[0]
-            const evilPlayersWithoutOberon =
-                evilsWithoutOberon.length > 1
-                    ? evilsWithoutOberon.join(', ')
-                    : evilsWithoutOberon[0]
+            let message = `You are ${privateMessages[player.role]}`
+            const evilsButMordredText =
+                evilsButMordred.length > 1 ? evilsButMordred.join(', ') : evilsButMordred[0]
+            const evilsButOberonText =
+                evilsButOberon.length > 1? evilsButOberon.join(', ') : evilsButOberon[0]
             switch (player.role) {
                 case 'merlin':
                     message =
                         message +
                         '\nEvils are: ' +
-                        evilPlayersWithoutMordred +
+                        evilsButMordredText +
                         ' '
                     if (mordred)
                         message =
@@ -262,7 +258,7 @@ router.post('/slack/slash', async request => {
                     message =
                         message +
                         '\nEvils are: ' +
-                        evilPlayersWithoutOberon +
+                        evilsButOberonText +
                         ' '
                     if (oberon)
                         message =
