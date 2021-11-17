@@ -244,10 +244,11 @@ router.post('/slack/slash', async request => {
                         message =
                             message + '\nMERLIN is ' + merlinAndMorgana[0] + ' '
                     } else {
+                        // Shuffling the 2 roles so they won't have a pattern
                         message =
                             message +
                             '\nMERLIN is either ' +
-                            merlinAndMorgana.join(' or ') +
+                            shuffle(merlinAndMorgana).join(' or ') +
                             ' '
                     }
                     break
