@@ -64,7 +64,7 @@ const sendSlackMessage = async (channel, text) => {
         },
     }
 
-    logJson(options, 'options')
+    //logJson(options, 'options')
 
     return await fetch('https://slack.com/api/chat.postMessage', options)
 }
@@ -109,13 +109,13 @@ router.post('/slack/slash', async request => {
         var rePattern = new RegExp(/@\S+/gm)
         var userFromText = text.match(rePattern)
         if (!userFromText) userFromText = []
-        const allUsers = ['@' + payload.user_name, ...userFromText] // payload.user_name is the user who issued the slack command
+        const matchedUsers = [`@${payload.user_name}`, ...userFromText] // payload.user_name is the user who issued the slack command
 
-        logJson(allUsers, 'allUsers')
+        logJson(matchedUsers, 'matchedUsers')
 
         // Remove duplicate users
-        const users = allUsers.filter((value, index) => {
-            return allUsers.indexOf(value) === index
+        const users = matchedUsers.filter((value, index) => {
+            return matchedUsers.indexOf(value) === index
         })
 
         logJson(users, 'users')
@@ -148,9 +148,7 @@ router.post('/slack/slash', async request => {
         )
         const numberOfEvil = setup.filter(x => x === 'evil').length
 
-        responseMessage =
-            responseMessage +
-            `*${numberOfEvil}* out of *${numberOfPlayers}* players are evil.\n\n`
+        responseMessage += `*${numberOfEvil}* out of *${numberOfPlayers}* players are evil.\n\n`
 
         // Replacing "evil" & "good" with specialRoles (if needed)
         const goodRoles = []
@@ -180,23 +178,14 @@ router.post('/slack/slash', async request => {
         const evils = evilRoles.length > 1 ? evilRoles.join(', ') : evilRoles[0]
         const goods = goodRoles.length > 1 ? goodRoles.join(', ') : goodRoles[0]
 
-        responseMessage =
-            responseMessage +
-            `:red_circle: Special Evil characters: ${evils}.\n`
-        responseMessage =
-            responseMessage +
-            `:large_blue_circle: Special Good characters: ${goods}.\n`
+        responseMessage += `:red_circle: Special Evil characters: ${evils}.\n`
+        responseMessage += `:large_blue_circle: Special Good characters: ${goods}.\n`
 
         // Shuffling the users order
         const shuffledUsers = shuffle(users)
 
-        const players = []
-        const evilsButMordred = []
-        const evilsButOberon = []
-        const merlinAndMorgana = []
-        let mordred = false
-        let oberon = false
         // Giving each user a role
+        const players = []
         setup.forEach(async role => {
             const user = shuffledUsers.pop()
             players.push({
@@ -204,63 +193,59 @@ router.post('/slack/slash', async request => {
                 user,
             })
             console.log(`LOG user: ${user} is ${role}`)
-
-            // setting up special variables to be used later
-            switch (role) {
-                case 'merlin':
-                    merlinAndMorgana.push(user)
-                    break
-                case 'morgana':
-                    evilsButMordred.push(user)
-                    evilsButOberon.push(user)
-                    merlinAndMorgana.push(user)
-                    break
-                case 'assassin':
-                case 'evil':
-                    evilsButMordred.push(user)
-                    evilsButOberon.push(user)
-                    break
-                case 'mordred':
-                    mordred = true
-                    evilsButOberon.push(user)
-                    break
-                case 'oberon':
-                    oberon = true
-                    evilsButMordred.push(user)
-                    break
-            }
         })
 
-        const evilsButMordredText =
-            (evilsButMordred.length > 1 ? evilsButMordred.join(' ') : evilsButMordred[0]) + ' '
-        const evilsButOberonText =
-            (evilsButOberon.length > 1 ? evilsButOberon.join(' ') : evilsButOberon[0]) + ' '
+        // Setting some variables to be used later
+        const mordred = players.find(e => e.role === 'mordred')
+        const oberon = players.find(e => e.role === 'oberon')
+        const merlin = players.find(e => e.role === 'merlin')
+        const percival = players.find(e => e.role === 'percival')
+        const morgana = players.find(e => e.role === 'morgana')
+        const evilPlayers = players.filter(e =>
+            ['evil', 'assassin', 'mordred', 'morgana', 'oberon'].includes(
+                e.role
+            )
+        )
+        const evilsButMordred = evilPlayers
+            .filter(e => e.role !== 'mordred')
+            .map(e => e.user)
+        const evilsButOberon = evilPlayers
+            .filter(e => e.role !== 'oberon')
+            .map(e => e.user)
+
+        logJson(evilPlayers, 'evilPlayers')
+        logJson(evilsButMordred, 'evilsButMordred')
+        logJson(evilsButOberon, 'evilsButOberon')
+
+        // Sending private messages to each player based on the role (and other players roles)
         players.forEach(async player => {
             let message = `You are ${privateMessages[player.role]}`
             switch (player.role) {
                 case 'merlin':
                     // MERLIN can see all evil players, but not MORDRED
-                    message =
-                        message +
-                        '\nEvils are: ' +
-                        evilsButMordredText.replace(`${player.user} `, '') +
-                        ' '
+                    message +=
+                        '\nEvils are: ' 
+                        + evilsButMordred.filter(e => e !== player.user).join(' ') 
+                        + ' '
                     if (mordred)
-                        message =
-                            message +
-                            ' \nMORDERED is with the evils, but hidden. '
+                        message +=
+                            ' \n*MORDERED* is with the evils, but *hidden*. '
+                    if (percival && morgana)
+                        message +=
+                            ' \n*PERCIVAL* is *confused* between you and *MORGANA*. '
+                    else if (percival && !morgana)
+                        message += ' \n*PERCIVAL* knows you are *MERLIN*. '
                     break
                 case 'percival':
                     // PERCIVAL can see who MERLIN is, if MORGANA playing then will see both
-                    if (merlinAndMorgana.length === 1) {
-                        message =
-                            message + '\nMERLIN is ' + merlinAndMorgana[0] + ' '
-                    } else {
+                    if (merlin && !morgana) {
+                        message += '\n*MERLIN* is ' + merlin.user + ' '
+                    }
+                    if (merlin && morgana) {
                         // Shuffling the 2 roles so they won't have a pattern
-                        message =
-                            message +
-                            '\nMERLIN is either ' +
-                            shuffle(merlinAndMorgana).join(' or ') +
+                        message +=
+                            '\n*MERLIN* is either ' +
+                            shuffle([merlin.user, morgana.user]).join(' or ') +
                             ' '
                     }
                     break
@@ -269,17 +254,20 @@ router.post('/slack/slash', async request => {
                 case 'mordred':
                 case 'evil':
                     // All evils (exluding OBERON) see each others, except the evil OBERON sees no one
-                    message =
-                        message +
+                    message +=
                         '\nEvils are: ' +
-                        evilsButOberonText.replace(`${player.user} `, '') +
+                        evilsButOberon.filter(e => e !== player.user).join(' ') +
                         ' '
+                    if (percival && player.role === 'morgana')
+                        message +=
+                            ' \n*PERCIVAL* is *confused* between you and *MERLIN*. '
                     if (oberon)
-                        message =
-                            message + ' \nOBERON is in your team, but hidden. '
+                        message += ' \n*OBERON* is in your team, but *hidden*. '
+                    if (merlin && player.role !== 'mordred')
+                        message += ' \n*MERLIN* knows you are evil. '
                     break
             }
-            message = message + `\n(${dateString}) \n ------- \n`
+            message += `\n(${dateString}) \n ------- \n`
 
             console.log(`LOG message: ${player.user} -> ${message}`)
 
@@ -288,12 +276,12 @@ router.post('/slack/slash', async request => {
         })
 
         // Making a list of who's playing this round (shuffling them again)
-        responseMessage = responseMessage + `Players this round: `
+        responseMessage += `Players this round: `
         const shuffledPlayers = shuffle(players)
         shuffledPlayers.forEach(async player => {
-            responseMessage = responseMessage + ` ${player.user} `
+            responseMessage += ` ${player.user} `
         })
-        responseMessage = responseMessage + ` \n `
+        responseMessage += ` \n `
 
         // Broadcasting the message in the main channel
         await sendSlackMessage(BROADCAST_SLACK_CHANNEL, responseMessage)
