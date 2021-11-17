@@ -221,23 +221,23 @@ router.post('/slack/slash', async request => {
             }
         })
 
+        const evilsButMordredText =
+            (evilsButMordred.length > 1 ? evilsButMordred.join(' ') : evilsButMordred[0]) + ' '
+        const evilsButOberonText =
+            (evilsButOberon.length > 1 ? evilsButOberon.join(' ') : evilsButOberon[0]) + ' '
         players.forEach(async player => {
             let message = `You are ${privateMessages[player.role]}`
-            const evilsButMordredText =
-                evilsButMordred.length > 1 ? evilsButMordred.join(', ') : evilsButMordred[0]
-            const evilsButOberonText =
-                evilsButOberon.length > 1? evilsButOberon.join(', ') : evilsButOberon[0]
             switch (player.role) {
                 case 'merlin':
                     message =
                         message +
                         '\nEvils are: ' +
-                        evilsButMordredText +
+                        evilsButMordredText.replace(`${player.user} `, '') +
                         ' '
                     if (mordred)
                         message =
                             message +
-                            '. \nMORDERED is with the evils, but hidden. '
+                            ' \nMORDERED is with the evils, but hidden. '
                     break
                 case 'percival':
                     if (merlinAndMorgana.length === 1) {
@@ -246,9 +246,9 @@ router.post('/slack/slash', async request => {
                     } else {
                         message =
                             message +
-                            '\nEither ' +
+                            '\nMERLIN is either ' +
                             merlinAndMorgana.join(' or ') +
-                            ' could be MERLIN. '
+                            ' '
                     }
                     break
                 case 'assassin':
@@ -258,15 +258,15 @@ router.post('/slack/slash', async request => {
                     message =
                         message +
                         '\nEvils are: ' +
-                        evilsButOberonText +
+                        evilsButOberonText.replace(`${player.user} `, '') +
                         ' '
                     if (oberon)
                         message =
-                            message + '. \nOBERON is in your team, but hidden. '
+                            message + ' \nOBERON is in your team, but hidden. '
                     break
             }
             message = message + `\n(${dateString}) \n ------- \n`
-            console.log(`LOG message: ${message}`)
+            console.log(`LOG message: ${player.user} -> ${message}`)
             await sendSlackMessage(player.user, message)
         })
 
