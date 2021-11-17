@@ -1,5 +1,5 @@
 import { Router } from 'itty-router'
-import _ from 'lodash'
+import shuffle from 'lodash.shuffle'
 
 const defaultSetupRoles = {
     10:['evil', 'evil', 'evil', 'evil', 'good', 'good', 'good', 'good', 'good', 'good'],
@@ -38,6 +38,10 @@ const privateMessages = {
     mordred: `${roleMessges['mordred']} :red_circle: *You are unknown to MERLIN.*`,
     percival: `${roleMessges['percival']} ${goodMessage}. *You know who is MERLIN.*`,
     merlin: `${roleMessges['merlin']} ${goodMessage}. *If the evil figured you are MERLIN, they win!*`,
+}
+
+Array.prototype.random = function() {
+    return this[Math.floor(Math.random() * this.length)]
 }
 
 const logJson = (json, name) => {
@@ -161,7 +165,7 @@ router.post('/slack/slash', async request => {
                     evilRoles.push(roleMessges[role])
                     break
                 case 'mordred-or-morgana':
-                    const random = _.sample(['mordred', 'morgana'])
+                    const random = ['mordred', 'morgana'].random()
                     setup.splice(setup.indexOf('evil'), 1, random)
                     evilRoles.push(roleMessges[random])
                     break
@@ -177,7 +181,7 @@ router.post('/slack/slash', async request => {
             responseMessage +
             `:large_blue_circle: Special Good characters: ${goods}.\n`
 
-        const shuffledUsers = _.shuffle(users)
+        const shuffledUsers = shuffle(users)
         const players = []
         const evilsWithoutMordred = []
         const evilsWithoutOberon = []
@@ -271,7 +275,7 @@ router.post('/slack/slash', async request => {
         })
 
         responseMessage = responseMessage + `Players this round: `
-        const shuffledPlayers = _.shuffle(players)
+        const shuffledPlayers = shuffle(players)
         shuffledPlayers.forEach(async player => {
             responseMessage = responseMessage + ` ${player.user} `
         })
