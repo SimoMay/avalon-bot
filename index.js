@@ -33,9 +33,9 @@ const privateMessages = {
     evil: evilMessage,
     good: goodMessage,
     assassin: `${roleMessges['assassin']} ${evilMessage}. *You get the final decision in the assasination of MERLIN.*`,
-    oberon: `${roleMessges['oberon']} ${evilMessage}. *You evil but do not know the other evils are.*`,
-    morgana: `${roleMessges['morgana']} ${evilMessage}. *You act/pose as MERLIN.*`,
-    mordred: `${roleMessges['mordred']} :red_circle: *You are unknown to MERLIN.*`,
+    oberon: `${roleMessges['oberon']} ${evilMessage}. *You don't know the other evils, and they don't know about you either.*`,
+    morgana: `${roleMessges['morgana']} ${evilMessage}. *You appear/pose as MERLIN to confuse PERCIVAL.*`,
+    mordred: `${roleMessges['mordred']} :red_circle: *Your identity is not revealed to MERLIN.*`,
     percival: `${roleMessges['percival']} ${goodMessage}. *You know who is MERLIN.*`,
     merlin: `${roleMessges['merlin']} ${goodMessage}. *If the evil figured you are MERLIN, they win!*`,
 }
@@ -179,7 +179,7 @@ router.post('/slack/slash', async request => {
         const goods = goodRoles.length > 1 ? goodRoles.join(', ') : goodRoles[0]
 
         responseMessage += `:red_circle: Special Evil characters: ${evils}.\n`
-        responseMessage += `:large_blue_circle: Special Good characters: ${goods}.\n`
+        responseMessage += `:large_blue_circle: Special Good characters: ${goods}.\n\n`
 
         // Shuffling the users order
         const shuffledUsers = shuffle(users)
@@ -219,34 +219,34 @@ router.post('/slack/slash', async request => {
 
         // Sending private messages to each player based on the role (and other players roles)
         players.forEach(async player => {
-            let message = `You are ${privateMessages[player.role]}`
+            let message = `You are ${privateMessages[player.role]}\n`
             switch (player.role) {
                 case 'merlin':
                     // MERLIN can see all evil players, but not MORDRED
                     message +=
-                        '\nEvils are: ' 
+                        '- *Evils* are: ' 
                         + evilsButMordred.filter(e => e !== player.user).join(' ') 
-                        + ' '
+                        + ' \n'
                     if (mordred)
                         message +=
-                            ' \n*MORDERED* is with the evils, but *hidden*. '
+                            '- *MORDERED* is with the evils, but *hidden*. \n'
                     if (percival && morgana)
                         message +=
-                            ' \n*PERCIVAL* is *confused* between you and *MORGANA*. '
+                            '- *PERCIVAL* is *confused* between you and *MORGANA*. \n'
                     else if (percival && !morgana)
-                        message += ' \n*PERCIVAL* knows you are *MERLIN*. '
+                        message += '- *PERCIVAL* knows you are *MERLIN*. \n'
                     break
                 case 'percival':
                     // PERCIVAL can see who MERLIN is, if MORGANA playing then will see both
                     if (merlin && !morgana) {
-                        message += '\n*MERLIN* is ' + merlin.user + ' '
+                        message += '- *MERLIN* is ' + merlin.user + ' \n'
                     }
                     if (merlin && morgana) {
                         // Shuffling the 2 roles so they won't have a pattern
                         message +=
-                            '\n*MERLIN* is either ' +
+                            '- *MERLIN* is either ' +
                             shuffle([merlin.user, morgana.user]).join(' or ') +
-                            ' '
+                            ' \n'
                     }
                     break
                 case 'assassin':
@@ -255,16 +255,20 @@ router.post('/slack/slash', async request => {
                 case 'evil':
                     // All evils (exluding OBERON) see each others, except the evil OBERON sees no one
                     message +=
-                        '\nEvils are: ' +
+                        '- *Evils* are: ' +
                         evilsButOberon.filter(e => e !== player.user).join(' ') +
-                        ' '
+                        ' \n'
                     if (percival && player.role === 'morgana')
                         message +=
-                            ' \n*PERCIVAL* is *confused* between you and *MERLIN*. '
+                            '- *PERCIVAL* is *confused* between you and *MERLIN*. \n'
                     if (oberon)
-                        message += ' \n*OBERON* is in your team, but *hidden*. '
+                        message += '- *OBERON* is in your team, but *hidden*. \n'
                     if (merlin && player.role !== 'mordred')
-                        message += ' \n*MERLIN* knows you are evil. '
+                        message += '- *MERLIN* knows you are evil. \n'
+                    break
+                case 'oberon':
+                    if (merlin)
+                        message += '- *MERLIN* knows you are evil. \n'
                     break
             }
             message += `\n(${dateString}) \n ------- \n`
