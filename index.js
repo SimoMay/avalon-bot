@@ -37,7 +37,7 @@ const privateMessages = {
     morgana: `${roleMessges['morgana']} ${evilMessage}. *You appear/pose as MERLIN to confuse PERCIVAL.*`,
     mordred: `${roleMessges['mordred']} :red_circle: *Your identity is not revealed to MERLIN.*`,
     percival: `${roleMessges['percival']} ${goodMessage}. *You know who is MERLIN.*`,
-    merlin: `${roleMessges['merlin']} ${goodMessage}. *If the evil figured you are MERLIN, they win!*`,
+    merlin: `${roleMessges['merlin']} ${goodMessage}. *You know who the evils are (except MORDRED) if the evil figured you are MERLIN, they win!*`,
 }
 
 Array.prototype.random = function() {
@@ -136,19 +136,14 @@ router.post('/slack/slash', async request => {
             day: 'numeric',
         }
         const dateString = currentDate.toLocaleDateString('en-us', dateOptions)
-        let responseMessage = `:crossed_swords: *Starting a new Avalon Game* (${dateString}) :crossed_swords:\n\n`
 
         const numberOfPlayers = users.length
         // deep coping these values so we don't mutate the defualts
         const setup = JSON.parse(
             JSON.stringify(defaultSetupRoles[numberOfPlayers])
         )
-        const specialRoles = JSON.parse(
-            JSON.stringify(defaultSpecialRoles[numberOfPlayers])
-        )
+        const specialRoles = defaultSpecialRoles[numberOfPlayers]
         const numberOfEvil = setup.filter(x => x === 'evil').length
-
-        responseMessage += `*${numberOfEvil}* out of *${numberOfPlayers}* players are evil.\n\n`
 
         // Replacing "evil" & "good" with specialRoles (if needed)
         const goodRoles = []
@@ -175,11 +170,6 @@ router.post('/slack/slash', async request => {
                     break
             }
         })
-        const evils = evilRoles.length > 1 ? evilRoles.join(', ') : evilRoles[0]
-        const goods = goodRoles.length > 1 ? goodRoles.join(', ') : goodRoles[0]
-
-        responseMessage += `:red_circle: Special Evil characters: ${evils}.\n`
-        responseMessage += `:large_blue_circle: Special Good characters: ${goods}.\n\n`
 
         // Shuffling the users order
         const shuffledUsers = shuffle(users)
@@ -263,12 +253,26 @@ router.post('/slack/slash', async request => {
                             '- *PERCIVAL* is *confused* between you and *MERLIN*. \n'
                     if (oberon)
                         message += '- *OBERON* is in your team, but *hidden*. \n'
-                    if (merlin && player.role !== 'mordred')
-                        message += '- *MERLIN* knows you are evil. \n'
+                    if (merlin) {
+                        message += '- *MERLIN* knows who the *evils* are '
+                        if (player.role !== 'mordred') {
+                            message += '(including *you*) '
+                            if (mordred) {
+                                message += 'except *MORDRED*. '
+                            }
+                        } else {
+                            message += '*except you* '
+                        }
+                        message += '\n'
+                    }
                     break
                 case 'oberon':
                     if (merlin)
-                        message += '- *MERLIN* knows you are evil. \n'
+                        message += '- *MERLIN* knows who the *evils* are (including you) '
+                        if (mordred) {
+                            message += ', except *MORDRED*. '
+                        }
+                        message += '\n'
                     break
             }
             message += `\n(${dateString}) \n ------- \n`
@@ -278,6 +282,12 @@ router.post('/slack/slash', async request => {
             // Sending a private message to each user with their specific role message
             await sendSlackMessage(player.user, message)
         })
+
+        
+        let responseMessage = `:crossed_swords: *Starting a new Avalon Game* (${dateString}) :crossed_swords:\n\n`
+        responseMessage += `*${numberOfEvil}* out of *${numberOfPlayers}* players are evil.\n\n`
+        responseMessage += `:red_circle: Special Evil characters: ${evilRoles.join(', ')}.\n`
+        responseMessage += `:large_blue_circle: Special Good characters: ${goodRoles.join(', ')}.\n\n`
 
         // Making a list of who's playing this round (shuffling them again)
         responseMessage += `Players this round: `
