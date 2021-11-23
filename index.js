@@ -284,22 +284,22 @@ router.post('/slack/slash', async request => {
         })
 
         
-        let responseMessage = `:crossed_swords: *Starting a new Avalon Game* (${dateString}) :crossed_swords:\n\n`
-        responseMessage += `*${numberOfEvil}* out of *${numberOfPlayers}* players are evil.\n\n`
-        responseMessage += `:red_circle: Special Evil characters: ${evilRoles.join(', ')}.\n`
-        responseMessage += `:large_blue_circle: Special Good characters: ${goodRoles.join(', ')}.\n\n`
+        let broadcastMessage = `:crossed_swords: *Starting a new Avalon Game* (${dateString}) :crossed_swords:\n\n`
+        broadcastMessage += `*${numberOfEvil}* out of *${numberOfPlayers}* players are evil.\n\n`
+        broadcastMessage += `:red_circle: Special Evil characters: ${evilRoles.join(', ')}.\n`
+        broadcastMessage += `:large_blue_circle: Special Good characters: ${goodRoles.join(', ')}.\n\n`
 
         // Making a list of who's playing this round (shuffling them again)
-        responseMessage += `Players this round: `
+        broadcastMessage += `Players this round: `
         const shuffledPlayers = shuffle(players)
         shuffledPlayers.forEach(async player => {
-            responseMessage += ` ${player.user} `
+            broadcastMessage += ` ${player.user} `
         })
-        responseMessage += ` \n `
+        broadcastMessage += ` \n `
 
         // Broadcasting the message in the main channel
-        await sendSlackMessage(BROADCAST_SLACK_CHANNEL, responseMessage)
-        return new Response(responseMessage)
+        await sendSlackMessage(BROADCAST_SLACK_CHANNEL, broadcastMessage)
+        return new Response(broadcastMessage)
     }
 
     // If we didn't get a "form", respond with an error
