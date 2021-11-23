@@ -138,7 +138,7 @@ router.post('/slack/slash', async request => {
         const dateString = currentDate.toLocaleDateString('en-us', dateOptions)
 
         const numberOfPlayers = users.length
-        // deep coping these values so we don't mutate the defualts
+        // deep copying these values so we don't mutate the defualts
         const setup = JSON.parse(
             JSON.stringify(defaultSetupRoles[numberOfPlayers])
         )
