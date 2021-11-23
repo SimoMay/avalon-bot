@@ -1,87 +1,12 @@
 import { Router } from 'itty-router'
 import shuffle from 'lodash.shuffle'
 
-const defaultSetupRoles = {
-    10:['evil', 'evil', 'evil', 'evil', 'good', 'good', 'good', 'good', 'good', 'good'],
-    9: ['evil', 'evil', 'evil', 'good', 'good', 'good', 'good', 'good', 'good'],
-    8: ['evil', 'evil', 'evil', 'good', 'good', 'good', 'good', 'good'],
-    7: ['evil', 'evil', 'evil', 'good', 'good', 'good', 'good'],
-    6: ['evil', 'evil', 'good', 'good', 'good', 'good'],
-    5: ['evil', 'evil', 'good', 'good', 'good'],
-}
-
-const defaultSpecialRoles = {
-    10:['merlin', 'assassin', 'percival', 'mordred', 'morgana', 'oberon'], // balance
-    9: ['merlin', 'assassin', 'percival', 'mordred', 'morgana'], // weaken the good (by removing oberon)
-    8: ['merlin', 'assassin', 'percival', 'mordred', 'morgana'], // balance
-    7: ['merlin', 'assassin', 'percival', 'mordred-or-morgana'], // weaken the evil
-    6: ['merlin', 'assassin', 'percival', 'mordred', 'morgana'], // balance
-    5: ['merlin', 'assassin', 'percival', 'mordred-or-morgana'], // weaken the evil
-}
-
-const goodMessage = ':large_blue_circle: Loyal Servent of Arthur'
-const evilMessage = ':red_circle: Minion of Mordred'
-const roleMessges = {
-    assassin: `:dagger_knife: *ASSASSIN*`,
-    oberon: `:ghost: *OBERON*`,
-    morgana: `:female_vampire: *MORGANA*`,
-    mordred: `:smiling_imp: *MORDRED*`,
-    percival: `:eyes: *PERCIVAL*`,
-    merlin: `:male_mage: *MERLIN*`,
-}
-const privateMessages = {
-    evil: evilMessage,
-    good: goodMessage,
-    assassin: `${roleMessges['assassin']} ${evilMessage}. *You get the final decision in the assasination of MERLIN.*`,
-    oberon: `${roleMessges['oberon']} ${evilMessage}. *You don't know the other evils, and they don't know about you either.*`,
-    morgana: `${roleMessges['morgana']} ${evilMessage}. *You appear/pose as MERLIN to confuse PERCIVAL.*`,
-    mordred: `${roleMessges['mordred']} :red_circle: *Your identity is not revealed to MERLIN.*`,
-    percival: `${roleMessges['percival']} ${goodMessage}. *You know who is MERLIN.*`,
-    merlin: `${roleMessges['merlin']} ${goodMessage}. *You know who the evils are (except MORDRED) if the evil figured you are MERLIN, they win!*`,
-}
+import { defaultSetupRoles, defaultSpecialRoles } from './defaults'
+import { roleMessges, privateMessages } from './messages'
+import { logJson, responseError, sendSlackMessage } from './helpers'
 
 Array.prototype.random = function() {
     return this[Math.floor(Math.random() * this.length)]
-}
-
-const logJson = (json, name) => {
-    console.log(`LOG ${name}:`, JSON.stringify(json, null, 2))
-}
-
-const sendSlackMessage = async (channel, text) => {
-    var message = {
-        channel,
-        text,
-        username: 'Avalon K9',
-        link_names: true,
-    }
-    const options = {
-        method: 'POST',
-        body: JSON.stringify(message),
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + SLACK_TOKEN,
-        },
-    }
-
-    //logJson(options, 'options')
-
-    return await fetch('https://slack.com/api/chat.postMessage', options)
-}
-
-const responseJson = json => {
-    const returnData = JSON.stringify(json, null, 2)
-
-    return new Response(returnData, {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-}
-
-const responseError = error => {
-    console.error('ERROR:', error)
-    return new Response(':skull: ' + error)
 }
 
 // Create a new router
