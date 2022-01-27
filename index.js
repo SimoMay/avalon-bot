@@ -16,7 +16,9 @@ const router = Router()
 Our index route, a simple hello world.
 */
 router.get('/', async () => {
-    return new Response('Hello, world! This is Avalon slack bot for K9 house.')
+    return new Response(
+        'Hello, world! This is Avalon slack bot for K9 house. v1.0.1'
+    )
 })
 
 router.post('/slack/slash', async request => {
@@ -179,7 +181,9 @@ router.post('/slack/slash', async request => {
                     // All evils (exluding OBERON) see each others, except the evil OBERON sees no one
                     message +=
                         '- *Evils* are: ' +
-                        evilsButOberon.filter(e => e !== player.user).join(' ') +
+                        evilsButOberon
+                            .filter(e => e !== player.user)
+                            .join(' ') +
                         ' \n'
                     if (percival && player.role === 'morgana')
                         message +=
@@ -204,8 +208,7 @@ router.post('/slack/slash', async request => {
                     if (merlin) {
                         message +=
                             '- *MERLIN* knows who the *evils* are (including you) '
-                        if (mordred) 
-                            message += ', except *MORDRED*. '
+                        if (mordred) message += ', except *MORDRED*. '
                     }
                     message += '\n'
                     break
@@ -220,8 +223,12 @@ router.post('/slack/slash', async request => {
 
         let broadcastMessage = `:crossed_swords: *Starting a new Avalon Game* (${dateString}) :crossed_swords:\n\n`
         broadcastMessage += `*${numberOfEvil}* out of *${numberOfPlayers}* players are evil.\n\n`
-        broadcastMessage += `:red_circle: Special Evil characters: ${evilRoles.join(', ')}.\n`
-        broadcastMessage += `:large_blue_circle: Special Good characters: ${goodRoles.join(', ')}.\n\n`
+        broadcastMessage += `:red_circle: Special Evil characters: `
+        broadcastMessage += evilRoles.join(', ')
+        broadcastMessage += `. \n`
+        broadcastMessage += `:large_blue_circle: Special Good characters: `
+        broadcastMessage += goodRoles.join(', ')
+        broadcastMessage += `. \n\n`
 
         // Making a list of who's playing this round (shuffling them again)
         broadcastMessage += `Players this round: `
