@@ -197,12 +197,13 @@ router.post('/slack/slash', async request => {
                     }
                     break
                 case 'oberon':
-                    if (merlin)
-                        message += '- *MERLIN* knows who the *evils* are (including you) '
-                        if (mordred) {
+                    if (merlin) {
+                        message +=
+                            '- *MERLIN* knows who the *evils* are (including you) '
+                        if (mordred) 
                             message += ', except *MORDRED*. '
-                        }
-                        message += '\n'
+                    }
+                    message += '\n'
                     break
             }
             message += `\n(${dateString}) \n ------- \n`
