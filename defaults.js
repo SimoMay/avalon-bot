@@ -8,7 +8,7 @@ const defaultSetupRoles = {
 }
 
 const defaultSpecialRoles = {
-    10:['merlin', 'percival', 'assassin', 'mordred', 'morgana', 'oberon'], // evil 4x6 good (balance)
+    10: ['merlin', 'percival', 'assassin', 'mordred', 'morgana', 'oberon'], // evil 4x6 good (balance)
     9: ['merlin', 'percival', 'assassin', 'mordred', 'morgana'], // evil 3x6 good (advantage for good)
     8: ['merlin', 'percival', 'assassin', 'mordred'], // evil 3x5 good (balance)
     7: ['merlin', 'percival', 'assassin', 'mordred-or-morgana'], // evil 3x4 good (advantage for evil)

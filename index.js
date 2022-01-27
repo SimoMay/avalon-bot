@@ -138,10 +138,11 @@ router.post('/slack/slash', async request => {
             switch (player.role) {
                 case 'merlin':
                     // MERLIN can see all evil players, but not MORDRED
-                    message +=
-                        '- *Evils* are: ' 
-                        + evilsButMordred.filter(e => e !== player.user).join(' ') 
-                        + ' \n'
+                    message += '- *Evils* are: '
+                    message += evilsButMordred
+                        .filter(e => e !== player.user)
+                        .join(' ')
+                    message += ' \n'
                     if (mordred)
                         message +=
                             '- *MORDERED* is with the evils, but *hidden*. \n'
@@ -163,7 +164,8 @@ router.post('/slack/slash', async request => {
                             '- *MERLIN* is either ' +
                             shuffle([merlin.user, morgana.user]).join(' or ') +
                             ' \n'
-                            message += '- One of them is *MORGANA* (evil) pretending to be *MERLIN* to confuse you \n'
+                        message +=
+                            '- One of them is *MORGANA* (evil) pretending to be *MERLIN* to confuse you \n'
                     }
                     break
                 case 'assassin':
@@ -179,7 +181,8 @@ router.post('/slack/slash', async request => {
                         message +=
                             '- *PERCIVAL* is *confused* between you and *MERLIN*. \n'
                     if (oberon)
-                        message += '- *OBERON* is in your team, but *hidden*. \n'
+                        message +=
+                            '- *OBERON* is in your team, but *hidden*. \n'
                     if (merlin) {
                         message += '- *MERLIN* knows who the *evils* are '
                         if (player.role !== 'mordred') {
@@ -210,7 +213,6 @@ router.post('/slack/slash', async request => {
             await sendSlackMessage(player.user, message)
         })
 
-        
         let broadcastMessage = `:crossed_swords: *Starting a new Avalon Game* (${dateString}) :crossed_swords:\n\n`
         broadcastMessage += `*${numberOfEvil}* out of *${numberOfPlayers}* players are evil.\n\n`
         broadcastMessage += `:red_circle: Special Evil characters: ${evilRoles.join(', ')}.\n`
