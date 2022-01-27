@@ -84,14 +84,18 @@ router.post('/slack/slash', async request => {
                 case 'mordred':
                 case 'morgana':
                 case 'oberon':
-                    setup.splice(setup.indexOf('evil'), 1, role)
-                    evilRoles.push(roleMessges[role])
+                    if (setup.indexOf('evil') > -1) {
+                        setup.splice(setup.indexOf('evil'), 1, role)
+                        evilRoles.push(roleMessges[role])
+                    }
                     break
                 case 'mordred-or-morgana':
                     // randomize which special role will be played this round
-                    const random = ['mordred', 'morgana'].random()
-                    setup.splice(setup.indexOf('evil'), 1, random)
-                    evilRoles.push(roleMessges[random])
+                    if (setup.indexOf('evil') > -1) {
+                        const random = ['mordred', 'morgana'].random()
+                        setup.splice(setup.indexOf('evil'), 1, random)
+                        evilRoles.push(roleMessges[random])
+                    }
                     break
             }
         })
