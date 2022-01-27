@@ -17,7 +17,7 @@ Our index route, a simple hello world.
 */
 router.get('/', async () => {
     return new Response(
-        'Hello, world! This is Avalon slack bot for K9 house. v1.0.1'
+        'Hello, world! This is Avalon slack bot for K9 house. v1.0.2'
     )
 })
 
@@ -140,7 +140,11 @@ router.post('/slack/slash', async request => {
 
         // Sending private messages to each player based on the role (and other players roles)
         players.forEach(async player => {
-            let message = `You are ${privateMessages[player.role]}\n`
+            let message = '----------------'
+            for (let i = 0; i < 60; i++) {
+                message += ` \n`
+            }
+            message += `You are ${privateMessages[player.role]}\n`
             switch (player.role) {
                 case 'merlin':
                     // MERLIN can see all evil players, but not MORDRED
@@ -160,19 +164,20 @@ router.post('/slack/slash', async request => {
                     break
                 case 'percival':
                     // PERCIVAL can see who MERLIN is, if MORGANA playing then will see both
-                    message += '- *MERLIN* knows who the *evils* are  \n'
                     if (merlin && !morgana) {
                         message += '- *MERLIN* is ' + merlin.user + ' \n'
                     }
                     if (merlin && morgana) {
                         // Shuffling the 2 roles so they won't have a pattern
-                        message +=
-                            '- *MERLIN* is either ' +
-                            shuffle([merlin.user, morgana.user]).join(' or ') +
-                            ' \n'
+                        message += '- *MERLIN* is either '
+                        message += shuffle([merlin.user, morgana.user]).join(
+                            ' or '
+                        )
+                        message += ' \n'
                         message +=
                             '- One of them is *MORGANA* (evil) pretending to be *MERLIN* to confuse you \n'
                     }
+                    message += '- *MERLIN* knows who the *evils* are  \n'
                     break
                 case 'assassin':
                 case 'morgana':
@@ -213,7 +218,10 @@ router.post('/slack/slash', async request => {
                     message += '\n'
                     break
             }
-            message += `\n(${dateString}) \n ------- \n`
+            for (let i = 0; i < 60; i++) {
+                message += ` \n`
+            }
+            message += `\nScroll up to see your role :point_up: :point_up: :point_up: :point_up: \n`
 
             console.log(`LOG message: ${player.user} -> ${message}`)
 
@@ -221,7 +229,11 @@ router.post('/slack/slash', async request => {
             await sendSlackMessage(player.user, message)
         })
 
-        let broadcastMessage = `:crossed_swords: *Starting a new Avalon Game* (${dateString}) :crossed_swords:\n\n`
+        let broadcastMessage = '----------------'
+        for (let i = 0; i < 10; i++) {
+            broadcastMessage += ` \n`
+        }
+        broadcastMessage += `:crossed_swords: *Starting a new Avalon Game* (${dateString}) :crossed_swords:\n\n`
         broadcastMessage += `*${numberOfEvil}* out of *${numberOfPlayers}* players are evil.\n\n`
         broadcastMessage += `:red_circle: Special Evil characters: `
         broadcastMessage += evilRoles.join(', ')
