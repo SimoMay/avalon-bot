@@ -8,12 +8,12 @@ const defaultSetupRoles = {
 }
 
 const defaultSpecialRoles = {
-    10:['merlin', 'assassin', 'percival', 'mordred', 'morgana', 'oberon'], // balance
-    9: ['merlin', 'assassin', 'percival', 'mordred', 'morgana'], // weaken the good (by removing oberon)
-    8: ['merlin', 'assassin', 'percival', 'mordred', 'morgana'], // balance
-    7: ['merlin', 'assassin', 'percival', 'mordred-or-morgana'], // weaken the evil
-    6: ['merlin', 'assassin', 'percival', 'mordred', 'morgana'], // balance
-    5: ['merlin', 'assassin', 'percival', 'mordred-or-morgana'], // weaken the evil
+    10:['merlin', 'percival', 'assassin', 'mordred', 'morgana', 'oberon'], // evil 4x6 good (balance)
+    9: ['merlin', 'percival', 'assassin', 'mordred', 'morgana'], // evil 3x6 good (advantage for good)
+    8: ['merlin', 'percival', 'assassin', 'mordred'], // evil 3x5 good (balance)
+    7: ['merlin', 'percival', 'assassin', 'mordred-or-morgana'], // evil 3x4 good (advantage for evil)
+    6: ['merlin', 'percival', 'assassin', 'mordred'], // evil 2x4 good (balance)
+    5: ['merlin', 'percival', 'assassin', 'mordred-or-morgana'], // evil 2x3 good (advantage for evil)
 }
 
 export { defaultSetupRoles, defaultSpecialRoles }
