@@ -153,6 +153,7 @@ router.post('/slack/slash', async request => {
                     break
                 case 'percival':
                     // PERCIVAL can see who MERLIN is, if MORGANA playing then will see both
+                    message += '- *MERLIN* knows who the *evils* are  \n'
                     if (merlin && !morgana) {
                         message += '- *MERLIN* is ' + merlin.user + ' \n'
                     }
@@ -162,6 +163,7 @@ router.post('/slack/slash', async request => {
                             '- *MERLIN* is either ' +
                             shuffle([merlin.user, morgana.user]).join(' or ') +
                             ' \n'
+                            message += '- One of them is *MORGANA* (evil) pretending to be *MERLIN* to confuse you \n'
                     }
                     break
                 case 'assassin':
