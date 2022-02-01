@@ -4,3 +4,6 @@ dist/
 .cargo-ok
 package-lock.json
 wrangler.toml
+
+static/dist/
+static/wrangler.toml

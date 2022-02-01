@@ -1,0 +1,13 @@
+name = "avalon-bot-static"
+type = "webpack"
+
+account_id = "xxxxxxx"
+workers_dev = true
+route = ""
+zone_id = ""
+compatibility_date = "2021-11-09"
+
+
+[site]
+bucket = "./public" # Add the directory with your static assets!
+entry-point = "./workers-site" # JS folder serving your assets
