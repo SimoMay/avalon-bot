@@ -17,7 +17,7 @@ Our index route, a simple hello world.
 */
 router.get('/', async () => {
     return new Response(
-        'Hello, world! This is Avalon slack bot for K9 house. v1.0.5'
+        'Hello, world! This is Avalon slack bot for K9 house. v1.0.6'
     )
 })
 
@@ -149,7 +149,7 @@ router.post('/slack/slash', async request => {
                     message += '- *Evils* are: '
                     message += evilsButMordred
                         .filter(e => e !== player.user)
-                        .join(' ')
+                        .join('  ')
                     message += ' \n'
                     if (mordred)
                         message +=
@@ -186,7 +186,7 @@ router.post('/slack/slash', async request => {
                         '- *Evils* are: ' +
                         evilsButOberon
                             .filter(e => e !== player.user)
-                            .join(' ') +
+                            .join('  ') +
                         ' \n'
                     if (percival && player.role === 'morgana')
                         message +=
