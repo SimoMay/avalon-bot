@@ -1,7 +1,7 @@
 import { Router } from 'itty-router'
 import shuffle from 'lodash.shuffle'
 
-import { defaultSetupRoles, defaultSpecialRoles } from './defaults'
+import { defaultSetupRoles, defaultSpecialRoles, images } from './defaults'
 import { roleMessges, privateMessages } from './messages'
 import { logJson, responseError, sendSlackMessage } from './helpers'
 
@@ -17,7 +17,7 @@ Our index route, a simple hello world.
 */
 router.get('/', async () => {
     return new Response(
-        'Hello, world! This is Avalon slack bot for K9 house. v1.0.2'
+        'Hello, world! This is Avalon slack bot for K9 house. v1.0.5'
     )
 })
 
@@ -139,12 +139,10 @@ router.post('/slack/slash', async request => {
         logJson(evilsButOberon, 'evilsButOberon')
 
         // Sending private messages to each player based on the role (and other players roles)
-        players.forEach(async player => {
-            let message = '----------------'
-            for (let i = 0; i < 60; i++) {
-                message += ` \n`
-            }
-            message += `You are ${privateMessages[player.role]}\n`
+        for (const player of players) {            
+            await sendSlackMessage(player.user, roleMessges[player.role], images[player.role])
+
+            let message = `\nYou are ${privateMessages[player.role]}\n`
             switch (player.role) {
                 case 'merlin':
                     // MERLIN can see all evil players, but not MORDRED
@@ -227,7 +225,7 @@ router.post('/slack/slash', async request => {
 
             // Sending a private message to each user with their specific role message
             await sendSlackMessage(player.user, message)
-        })
+        }
 
         let broadcastMessage = '----------------'
         for (let i = 0; i < 10; i++) {

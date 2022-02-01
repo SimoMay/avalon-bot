@@ -1,6 +1,8 @@
 const goodMessage = ':large_blue_circle: Loyal Servent of Arthur'
 const evilMessage = ':red_circle: Minion of Mordred'
 const roleMessges = {
+    evil: evilMessage,
+    good: goodMessage,
     assassin: `:dagger_knife: *ASSASSIN*`,
     oberon: `:ghost: *OBERON*`,
     morgana: `:female_vampire: *MORGANA*`,
@@ -9,8 +11,8 @@ const roleMessges = {
     merlin: `:male_mage: *MERLIN*`,
 }
 const privateMessages = {
-    evil: evilMessage,
-    good: goodMessage,
+    evil: roleMessges['evil'],
+    good: roleMessges['good'],
     assassin: `${roleMessges['assassin']} ${evilMessage}. *You get the final decision in the assasination of MERLIN.*`,
     oberon: `${roleMessges['oberon']} ${evilMessage}. *You don't know the other evils, and they don't know about you either.*`,
     morgana: `${roleMessges['morgana']} ${evilMessage}. *You appear/pose as MERLIN to confuse PERCIVAL.*`,

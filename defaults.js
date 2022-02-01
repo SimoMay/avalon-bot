@@ -16,4 +16,16 @@ const defaultSpecialRoles = {
     5: ['merlin', 'percival', 'assassin', 'mordred-or-morgana'], // evil 2x3 good (advantage for evil)
 }
 
-export { defaultSetupRoles, defaultSpecialRoles }
+
+const images = {
+    evil: STATIC_ENDPOINT + 'images/evil.png',
+    good: STATIC_ENDPOINT + 'images/good.png',
+    assassin: STATIC_ENDPOINT + 'images/assassin.png',
+    oberon: STATIC_ENDPOINT + 'images/oberon.png',
+    morgana: STATIC_ENDPOINT + 'images/morgana.png',
+    mordred: STATIC_ENDPOINT + 'images/mordred.png',
+    percival: STATIC_ENDPOINT + 'images/percival.png',
+    merlin: STATIC_ENDPOINT + 'images/merlin.png',
+}
+
+export { defaultSetupRoles, defaultSpecialRoles, images }

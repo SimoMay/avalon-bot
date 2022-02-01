@@ -2,13 +2,30 @@ const logJson = (json, name) => {
     console.log(`LOG ${name}:`, JSON.stringify(json, null, 2))
 }
 
-const sendSlackMessage = async (channel, text) => {
+const sendSlackMessage = async (channel, text, image) => {
     var message = {
         channel,
         //channel: TEST_SLACK_USERNAME,
         text,
         username: 'Avalon K9',
         link_names: true,
+        mrkdwn: true,
+    }
+    if (image) {
+        message.blocks = [
+                {
+                    "type": "image",
+                    "title": {
+                        "type": "plain_text",
+                        "text": text
+                    },
+                    "image_url": image,
+                    "alt_text": text
+                },
+                {
+                    "type": "divider"
+                }
+            ]
     }
     const options = {
         method: 'POST',
