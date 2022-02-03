@@ -17,7 +17,7 @@ Our index route, a simple hello world.
 */
 router.get('/', async () => {
     return new Response(
-        'Hello, world! This is Avalon slack bot for K9 house. v1.0.6'
+        'Hello, world! This is Avalon slack bot for K9 house. v1.0.7'
     )
 })
 
@@ -227,8 +227,8 @@ router.post('/slack/slash', async request => {
             await sendSlackMessage(player.user, message)
         }
 
-        let broadcastMessage = '----------------'
-        for (let i = 0; i < 10; i++) {
+        let broadcastMessage = '-----------------------------'
+        for (let i = 0; i < 5; i++) {
             broadcastMessage += ` \n`
         }
         broadcastMessage += `:crossed_swords: *Starting a new Avalon Game* (${dateString}) :crossed_swords:\n\n`
@@ -247,6 +247,32 @@ router.post('/slack/slash', async request => {
             broadcastMessage += ` ${player.user} `
         })
         broadcastMessage += ` \n `
+
+        let story = '\n\n\n\n\n\n:star: :star: :star: \n\n'
+        story += `As night falls on *Avalon*, \n\n`
+        story += `Hidden among *Arthur*'s brave warriors are *MORDRED*'s unscrupulous minions.\n`
+        story += `These forces of evil are few in number (:red_circle: *${numberOfEvil}*) but have knowledge of each other`
+        if (merlin) {
+            story += ` and remain hidden from all but one of *Arthur*'s servants.\n\n`
+            story += `${roleMessges['merlin']} alone knows the agents of evil, but he must speak of this only in riddles. If his true identity is discovered *all will be lost*.\n\n`
+            if (mordred) {
+                story += `${roleMessges['merlin']} is powerfull, but his powers fall short when it comes to ${roleMessges['mordred']} himself, only *MORDRED* stays hidden in the shadow, never revealing his evil intentions.\n\n`
+            }
+        } else {
+            story += `.\n\n`
+        }
+        if (percival) {
+            story += `Fear not, as one of *Arthur*'s loyal servant is ${roleMessges['percival']}, with his knowledge of the identity of *MERLIN*. Using that knowledge is *key* to protecting *MERLIN*.\n\n`
+            if (morgana) {
+                story += `Although *MORDRED*'s minions are not to be underestimated, as they also have ${roleMessges['morgana']}, with her special power to reveals herself as *MERLIN*, making it difficult for *PERCIVAL* to know which is which.\n\n`
+            }
+        }
+        if (oberon) {
+            story += `${roleMessges['oberon']} has sided with the force of evil, but his loyalty is invisible to other *MORDRED*'s minions, nor does he gain knowledge of them either.\n\n`
+        }
+        story += `\n\n- Will goodness prevail? Or will Avalon fall under *MORDRED*'s dark shadow?`
+
+        broadcastMessage += story
 
         // Broadcasting the message in the main channel
         await sendSlackMessage(BROADCAST_SLACK_CHANNEL, broadcastMessage)
