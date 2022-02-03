@@ -254,7 +254,7 @@ router.post('/slack/slash', async request => {
                     message += '\n'
                     break
             }
-            for (let i = 0; i < 60; i++) {
+            for (let i = 0; i < parseInt(NUMBER_OF_EMPTY_SPACES); i++) {
                 message += ` \n`
             }
             message += `\nScroll up to see your role :point_up: :point_up: :point_up: :point_up: \n`
