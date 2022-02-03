@@ -251,9 +251,9 @@ router.post('/slack/slash', async request => {
         let story = '\n\n\n\n\n\n:star: :star: :star: \n\n'
         story += `As the night falls on *Avalon*, \n\n`
         story += `Hidden among *Arthur*'s brave warriors are *MORDRED*'s unscrupulous minions.\n`
-        story += `These forces of evil are few in number (:red_circle: *${numberOfEvil}*) but have knowledge of each other`
+        story += `These forces of evil are few in number (:red_circle: *${numberOfEvil}*) but have knowledge of each other and remain hidden from all`
         if (merlin) {
-            story += ` and remain hidden from all but one of *Arthur*'s servants.\n\n`
+            story += ` but one of *Arthur*'s servants.\n\n`
             story += `${roleMessges['merlin']} alone knows the agents of evil, but he must speak of this only in riddles. If his true identity is discovered *all will be lost*.\n\n`
             if (mordred) {
                 story += `${roleMessges['merlin']} is powerfull, but his powers fall short when it comes to ${roleMessges['mordred']} himself, only *MORDRED* stays hidden in the shadow, never revealing his evil intentions.\n\n`
