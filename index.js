@@ -17,7 +17,7 @@ Our index route, a simple hello world.
 */
 router.get('/', async () => {
     return new Response(
-        'Hello, world! This is Avalon slack bot for K9 house. v1.0.7'
+        'Hello, world! This is Avalon slack bot for K9 house. v1.0.9'
     )
 })
 
@@ -251,20 +251,20 @@ router.post('/slack/slash', async request => {
         let story = '\n\n\n\n\n\n:star: :star: :star: \n\n'
         story += `As the night falls on *Avalon*, \n\n`
         story += `Hidden among *Arthur*'s brave warriors are *MORDRED*'s unscrupulous minions.\n`
-        story += `These forces of evil are few in number (:red_circle: *${numberOfEvil}*) but have knowledge of each other and remain hidden from all`
+        story += `These forces of evil are few in number (:red_circle: only *${numberOfEvil}*) but have knowledge of each other and remain hidden from all`
         if (merlin) {
             story += ` but one of *Arthur*'s servants.\n\n`
-            story += `${roleMessges['merlin']} alone knows the agents of evil, but he must speak of this only in riddles. If his true identity is discovered *all will be lost*.\n\n`
+            story += `${roleMessges['merlin']} alone knows the agents of evil, but he must speak of this only in riddles. If his true identity is discovered :dagger_knife: *all will be lost*.\n\n`
             if (mordred) {
-                story += `${roleMessges['merlin']} is powerfull, but his powers fall short when it comes to ${roleMessges['mordred']} himself, only *MORDRED* stays hidden in the shadow, never revealing his evil intentions.\n\n`
+                story += `*MERLIN* is powerful, but his powers fall short when it comes to ${roleMessges['mordred']} himself. Only *MORDRED* stays hidden in the shadow, never revealing his evil intentions.\n\n`
             }
         } else {
             story += `.\n\n`
         }
         if (percival) {
-            story += `Fear not, as one of *Arthur*'s loyal servant is ${roleMessges['percival']}, with his knowledge of the identity of *MERLIN*. Using that knowledge is *key* to protecting *MERLIN*.\n\n`
+            story += `Fear not, as one of *Arthur*'s loyal servants is ${roleMessges['percival']}, with his knowledge of the identity of *MERLIN*. Using that knowledge is *key* to protecting *MERLIN*.\n\n`
             if (morgana) {
-                story += `Although *MORDRED*'s minions are not to be underestimated, as they also have ${roleMessges['morgana']}, with her special power to reveals herself as *MERLIN*, making it difficult for *PERCIVAL* to know which is which.\n\n`
+                story += `Although *MORDRED*'s minions are not to be underestimated, as they also have ${roleMessges['morgana']}, with her unique power to reveal herself as *MERLIN*, making it difficult for *PERCIVAL* to know which is which.\n\n`
             }
         }
         if (oberon) {
