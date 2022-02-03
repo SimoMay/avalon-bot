@@ -17,7 +17,7 @@ Our index route, a simple hello world.
 */
 router.get('/', async () => {
     return new Response(
-        'Hello, world! This is Avalon slack bot for K9 house. v1.1.0'
+        'Hello, world! This is Avalon slack bot for K9 house. v1.1.1'
     )
 })
 
