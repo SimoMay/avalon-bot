@@ -266,7 +266,7 @@ router.post('/slack/slash', async request => {
         }
 
         let broadcastMessage = '-----------------------------'
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 4; i++) {
             broadcastMessage += ` \n`
         }
         broadcastMessage += `:crossed_swords: *Starting a new Avalon Game* (${dateString}) :crossed_swords:\n\n`
@@ -286,7 +286,7 @@ router.post('/slack/slash', async request => {
         })
         broadcastMessage += ` \n `
 
-        let story = '\n\n\n\n\n\n:star: :star: :star: \n\n'
+        let story = '\n\n\n:star: :star: :star: \n\n'
         story += `As the night falls on *Avalon*, \n\n`
         story += `Hidden among *Arthur*'s brave warriors are *MORDRED*'s unscrupulous minions.\n`
         story += `These forces of evil are few in number (:red_circle: only *${numberOfEvil}*) but have knowledge of each other and remain hidden from all`
@@ -308,7 +308,7 @@ router.post('/slack/slash', async request => {
         if (oberon) {
             story += `${roleMessges['oberon']} has sided with the force of evil, but his loyalty is invisible to other *MORDRED*'s minions, nor does he gain knowledge of them either.\n\n`
         }
-        story += `\n\n- Will goodness prevail? Or will Avalon fall under *MORDRED*'s dark shadow?`
+        story += `\n- Will goodness prevail? Or will Avalon fall under *MORDRED*'s dark shadow?`
 
         broadcastMessage += story
 
