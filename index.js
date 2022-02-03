@@ -177,7 +177,15 @@ router.post('/slack/slash', async request => {
         logJson(evilsButOberon, 'evilsButOberon')
 
         // Sending private messages to each player based on the role (and other players roles)
-        for (const player of players) {            
+        for (const player of players) {          
+            let premessage = `\nScroll down to see your role :point_down: :point_down: :point_down: :point_down: \n`  
+            for (let i = 0; i < parseInt(NUMBER_OF_EMPTY_SPACES); i++) {
+                premessage += ` \n`
+            }
+            premessage += `:point_down: \n`
+            await sendSlackMessage(player.user, premessage)
+            
+            // posting an image of the role
             await sendSlackMessage(player.user, roleMessges[player.role], images[player.role])
 
             let message = `\nYou are ${privateMessages[player.role]}\n`
