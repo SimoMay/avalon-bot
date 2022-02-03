@@ -249,7 +249,7 @@ router.post('/slack/slash', async request => {
         broadcastMessage += ` \n `
 
         let story = '\n\n\n\n\n\n:star: :star: :star: \n\n'
-        story += `As night falls on *Avalon*, \n\n`
+        story += `As the night falls on *Avalon*, \n\n`
         story += `Hidden among *Arthur*'s brave warriors are *MORDRED*'s unscrupulous minions.\n`
         story += `These forces of evil are few in number (:red_circle: *${numberOfEvil}*) but have knowledge of each other`
         if (merlin) {
