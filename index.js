@@ -49,10 +49,10 @@ router.post('/slack/slash', async request => {
 
         // Game validation, Avalon has min 5 players and 10 max
         if (users.length < parseInt(MIN_PLAYERS)) {
-            return responseError('You need to be at least 5 players!')
+            return responseError(`You need to be at least ${MIN_PLAYERS} players!`)
         }
         if (users.length > parseInt(MAX_PLAYERS)) {
-            return responseError('You cannot be more than 10 players!')
+            return responseError(`You cannot be more than ${MAX_PLAYERS} players!`)
         }
 
         const currentDate = new Date()
