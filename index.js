@@ -17,7 +17,7 @@ Our index route, a simple hello world.
 */
 router.get('/', async () => {
     return new Response(
-        'Hello, world! This is Avalon slack bot for K9 house. v1.0.9'
+        'Hello, world! This is Avalon slack bot for K9 house. v1.1.0'
     )
 })
 
@@ -55,6 +55,34 @@ router.post('/slack/slash', async request => {
             return responseError(`You cannot be more than ${MAX_PLAYERS} players!`)
         }
 
+        // in case players don't want to the default roles, they can write after the slash which special roles to include
+        const statedRoles = [];
+        // if they want to play with Mordred they can write: mordred, +md or +mrd
+        if (text.search(/mordred|\+md|\+mrd/i) > -1) {
+            statedRoles.push('mordred')
+        }
+        // if they want to play with Morgana they can write: morgana, +mg or +mrg
+        if (text.search(/morgana|\+mg|\+mrg/i) > -1) {
+            statedRoles.push('morgana')
+        }
+        // if they want to play with Percival they can write: percival, +p or +pr
+        if (text.search(/percival|\+p|\+pr/i) > -1) {
+            statedRoles.push('percival')
+        }
+        // if they want to play with Oberon they can write: oberon, +o or +ob
+        if (text.search(/oberon|\+o|\+ob/i) > -1) {
+            statedRoles.push('oberon')
+        }
+        // if they want to play with no special roles they can write: basic, no special or --
+        if (text.search(/basic|no special|\-\-/i) > -1) {
+            statedRoles.push('basic')
+        }
+        // We can't have morgana without percival
+        if(statedRoles.indexOf('morgana') > -1 && statedRoles.indexOf('percival') === -1) {
+            statedRoles.push('percival')
+        }
+        logJson(statedRoles, 'statedRoles')
+
         const currentDate = new Date()
         const dateOptions = {
             weekday: 'long',
@@ -69,7 +97,17 @@ router.post('/slack/slash', async request => {
         const setup = JSON.parse(
             JSON.stringify(defaultSetupRoles[numberOfPlayers])
         )
-        const specialRoles = defaultSpecialRoles[numberOfPlayers]
+        let specialRoles = defaultSpecialRoles[numberOfPlayers]
+        if (statedRoles.length > 0) {
+            // if players wants no special roles, we empty the whole array
+            if(statedRoles.indexOf('basic') > -1) {
+                statedRoles.splice(0, statedRoles.length)
+            }
+            // Every game must have a Merlin and Assassin
+            statedRoles.push('merlin')
+            statedRoles.push('assassin')
+            specialRoles = statedRoles
+        }
         const numberOfEvil = setup.filter(x => x === 'evil').length
 
         // Replacing "evil" & "good" with specialRoles (if needed)
