@@ -3,9 +3,7 @@ import shuffle from './pkg/shuffle.js'
 // import { Router } from 'itty-router'
 // import shuffle from 'lodash.shuffle'
 
-import { config } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";
-
-config({export: true})
+import "https://deno.land/x/dotenv@v3.2.0/load.ts";
 
 import { defaultSetupRoles, defaultSpecialRoles, images } from './defaults.js'
 import { roleMessges, privateMessages } from './messages.js'
