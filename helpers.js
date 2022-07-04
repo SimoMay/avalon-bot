@@ -4,8 +4,8 @@ const logJson = (json, name) => {
 
 const sendSlackMessage = async (channel, text, image) => {
     var message = {
-        channel,
-        //channel: TEST_SLACK_USERNAME,
+        //channel,
+        channel: TEST_SLACK_USERNAME,
         text,
         username: 'Avalon K9',
         link_names: true,
