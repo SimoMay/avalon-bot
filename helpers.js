@@ -4,8 +4,8 @@ const logJson = (json, name) => {
 
 const sendSlackMessage = async (channel, text, image) => {
     const message = {
-        //channel,
-        channel: Deno.env.get('TEST_SLACK_USERNAME'),
+        channel,
+        //channel: Deno.env.get('TEST_SLACK_USERNAME'),
         text,
         username: 'Avalon K9',
         link_names: true,
