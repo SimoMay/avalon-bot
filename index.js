@@ -9,8 +9,6 @@ import { defaultSetupRoles, defaultSpecialRoles, images } from './defaults.js'
 import { roleMessges, privateMessages } from './messages.js'
 import { logJson, responseError, sendSlackMessage } from './helpers.js'
 
-console.log('images:', images)
-
 Array.prototype.random = function() {
     return this[Math.floor(Math.random() * this.length)]
 }

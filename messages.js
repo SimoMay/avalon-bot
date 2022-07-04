@@ -18,7 +18,7 @@ const privateMessages = {
     morgana: `${roleMessges['morgana']} ${evilMessage}. *You appear/pose as MERLIN to confuse PERCIVAL.*`,
     mordred: `${roleMessges['mordred']} :red_circle: *Your identity is not revealed to MERLIN.*`,
     percival: `${roleMessges['percival']} ${goodMessage}. *You know who is MERLIN.*`,
-    merlin: `${roleMessges['merlin']} ${goodMessage}. *You know who the evils are. IMPORTANT if the evil figured you are MERLIN, they win!*`,
+    merlin: `${roleMessges['merlin']} ${goodMessage}. *You know who the evils are. IMPORTANT: if the evil figured you are MERLIN, they win!*`,
 }
 
 export { roleMessges, privateMessages, goodMessage, evilMessage }
