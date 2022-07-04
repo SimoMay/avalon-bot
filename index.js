@@ -1,9 +1,17 @@
-import { Router } from 'itty-router'
-import shuffle from 'lodash.shuffle'
+import { Router } from './pkg/itty-router.js';
+import shuffle from './pkg/shuffle.js'
+// import { Router } from 'itty-router'
+// import shuffle from 'lodash.shuffle'
 
-import { defaultSetupRoles, defaultSpecialRoles, images } from './defaults'
-import { roleMessges, privateMessages } from './messages'
-import { logJson, responseError, sendSlackMessage } from './helpers'
+import { config } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";
+
+config({export: true})
+
+import { defaultSetupRoles, defaultSpecialRoles, images } from './defaults.js'
+import { roleMessges, privateMessages } from './messages.js'
+import { logJson, responseError, sendSlackMessage } from './helpers.js'
+
+console.log('images:', images)
 
 Array.prototype.random = function() {
     return this[Math.floor(Math.random() * this.length)]
@@ -15,7 +23,7 @@ const router = Router()
 /*
 Our index route, a simple hello world.
 */
-router.get('/', async () => {
+router.get('/', () => {
     return new Response(
         'Hello, world! This is Avalon slack bot for K9 house. v1.1.1'
     )
@@ -33,8 +41,8 @@ router.post('/slack/slash', async request => {
         // "text" field is what the user wrote after the slash command (in this case anything after /avalon)
         const text = payload.text
         // Regex to retrieve all the mentioned users, they start with @
-        var rePattern = new RegExp(/@\S+/gm)
-        var userFromText = text.match(rePattern)
+        const rePattern = new RegExp(/@\S+/gm)
+        const userFromText = text.match(rePattern)
         if (!userFromText) userFromText = []
         const matchedUsers = [`@${payload.user_name}`, ...userFromText] // payload.user_name is the user who issued the slack command
 
@@ -48,11 +56,11 @@ router.post('/slack/slash', async request => {
         logJson(users, 'users')
 
         // Game validation, Avalon has min 5 players and 10 max
-        if (users.length < parseInt(MIN_PLAYERS)) {
-            return responseError(`You need to be at least ${MIN_PLAYERS} players!`)
+        if (users.length < parseInt(Deno.env.get('MIN_PLAYERS'))) {
+            return responseError(`You need to be at least ${Deno.env.get('MIN_PLAYERS')} players!`)
         }
-        if (users.length > parseInt(MAX_PLAYERS)) {
-            return responseError(`You cannot be more than ${MAX_PLAYERS} players!`)
+        if (users.length > parseInt(Deno.env.get('MAX_PLAYERS'))) {
+            return responseError(`You cannot be more than ${Deno.env.get('MAX_PLAYERS')} players!`)
         }
 
         // in case players don't want to the default roles, they can write after the slash which special roles to include
@@ -145,7 +153,7 @@ router.post('/slack/slash', async request => {
 
         // Giving each user a role
         const players = []
-        setup.forEach(async role => {
+        setup.forEach(role => {
             const user = shuffledUsers.pop()
             players.push({
                 role,
@@ -179,7 +187,7 @@ router.post('/slack/slash', async request => {
         // Sending private messages to each player based on the role (and other players roles)
         for (const player of players) {          
             let premessage = `\nScroll down to see your role :point_down: :point_down: :point_down: :point_down: \n`  
-            for (let i = 0; i < parseInt(NUMBER_OF_EMPTY_SPACES); i++) {
+            for (let i = 0; i < parseInt(Deno.env.get('NUMBER_OF_EMPTY_SPACES')); i++) {
                 premessage += ` \n`
             }
             premessage += `:point_down: \n`
@@ -262,7 +270,7 @@ router.post('/slack/slash', async request => {
                     message += '\n'
                     break
             }
-            for (let i = 0; i < parseInt(NUMBER_OF_EMPTY_SPACES); i++) {
+            for (let i = 0; i < parseInt(Deno.env.get('NUMBER_OF_EMPTY_SPACES')); i++) {
                 message += ` \n`
             }
             message += `\nScroll up to see your role :point_up: :point_up: :point_up: :point_up: \n`
@@ -291,7 +299,7 @@ router.post('/slack/slash', async request => {
         // Making a list of who's playing this round (shuffling them again)
         broadcastMessage += `Players this round: `
         const shuffledPlayers = shuffle(players)
-        shuffledPlayers.forEach(async player => {
+        shuffledPlayers.forEach(player => {
             broadcastMessage += ` ${player.user} `
         })
         broadcastMessage += ` \n `
@@ -322,10 +330,10 @@ router.post('/slack/slash', async request => {
 
         broadcastMessage += story
 
-        console.log('Sending Broadcast message to channel ' + BROADCAST_SLACK_CHANNEL)
+        console.log('Sending Broadcast message to channel ' + Deno.env.get('BROADCAST_SLACK_CHANNEL'))
 
         // Broadcasting the message in the main channel
-        await sendSlackMessage(BROADCAST_SLACK_CHANNEL, broadcastMessage)
+        await sendSlackMessage(Deno.env.get('BROADCAST_SLACK_CHANNEL'), broadcastMessage)
         return new Response(broadcastMessage)
     }
 
@@ -343,6 +351,15 @@ router.all('*', () => new Response('404, not found!', { status: 404 }))
 This snippet ties our worker to the router we deifned above, all incoming requests
 are passed to the router where your routes are called and the response is sent.
 */
-addEventListener('fetch', e => {
-    e.respondWith(router.handle(e.request))
-})
+// addEventListener('fetch', e => {
+//     e.respondWith(router.handle(e.request))
+// })
+
+const server = Deno.listen({ port: 8080 });
+
+for await (const conn of server) {
+  const httpConn = Deno.serveHttp(conn);
+  for await (const requestEvent of httpConn) {
+    requestEvent.respondWith(router.handle(requestEvent.request));
+  }
+}

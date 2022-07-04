@@ -18,14 +18,14 @@ const defaultSpecialRoles = {
 
 
 const images = {
-    evil: STATIC_ENDPOINT + 'images/evil.png',
-    good: STATIC_ENDPOINT + 'images/good.png',
-    assassin: STATIC_ENDPOINT + 'images/assassin.png',
-    oberon: STATIC_ENDPOINT + 'images/oberon.png',
-    morgana: STATIC_ENDPOINT + 'images/morgana.png',
-    mordred: STATIC_ENDPOINT + 'images/mordred.png',
-    percival: STATIC_ENDPOINT + 'images/percival.png',
-    merlin: STATIC_ENDPOINT + 'images/merlin.png',
+    evil: Deno.env.get('STATIC_ENDPOINT') + 'images/evil.png',
+    good: Deno.env.get('STATIC_ENDPOINT') + 'images/good.png',
+    assassin: Deno.env.get('STATIC_ENDPOINT') + 'images/assassin.png',
+    oberon: Deno.env.get('STATIC_ENDPOINT') + 'images/oberon.png',
+    morgana: Deno.env.get('STATIC_ENDPOINT') + 'images/morgana.png',
+    mordred: Deno.env.get('STATIC_ENDPOINT') + 'images/mordred.png',
+    percival: Deno.env.get('STATIC_ENDPOINT') + 'images/percival.png',
+    merlin: Deno.env.get('STATIC_ENDPOINT') + 'images/merlin.png',
 }
 
 export { defaultSetupRoles, defaultSpecialRoles, images }
