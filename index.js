@@ -273,6 +273,8 @@ router.post('/slack/slash', async request => {
             await sendSlackMessage(player.user, message)
         }
 
+        console.log('Done sending private messages')
+
         let broadcastMessage = '-----------------------------'
         for (let i = 0; i < 4; i++) {
             broadcastMessage += ` \n`
@@ -319,6 +321,8 @@ router.post('/slack/slash', async request => {
         story += `\n- Will goodness prevail? Or will Avalon fall under *MORDRED*'s dark shadow?`
 
         broadcastMessage += story
+
+        console.log('Sending Broadcast message to channel ' + BROADCAST_SLACK_CHANNEL)
 
         // Broadcasting the message in the main channel
         await sendSlackMessage(BROADCAST_SLACK_CHANNEL, broadcastMessage)
