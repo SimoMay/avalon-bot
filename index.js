@@ -139,6 +139,11 @@ router.post('/slack/slash', async request => {
                         const random = ['mordred', 'morgana'].random()
                         setup.splice(setup.indexOf('evil'), 1, random)
                         evilRoles.push(roleMessges[random])
+                        // We can't have morgana without percival
+                        if(random === 'morgana') {
+                            setup.splice(setup.indexOf('good'), 1, 'percival')
+                            goodRoles.push(roleMessges['percival'])
+                        }
                     }
                     break
             }
