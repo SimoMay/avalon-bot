@@ -29,6 +29,10 @@ async function handleEvent(event) {
         bypassCache: true,
       }
     }
+    options.cacheControl = {
+      browserTTL: 3600,           // 1 hour
+      edgeTTL: 2 * 60 * 60 * 24, // 2 days
+    }
 
     const page = await getAssetFromKV(event, options)
 

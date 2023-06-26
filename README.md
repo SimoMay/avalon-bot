@@ -1,5 +1,15 @@
-Avalon slack bot for K9 house.
+Avalon slack bot helper, written in Deno.
 
+Rename `.env.example` to `.env`
+
+To start the server:
+
+```
+deno run --allow-env --allow-read --allow-net index.js
+```
+
+
+<!-- -- OLD
 Rename `wrangler copy.toml` to `wrangler.toml`
 
 ## Router
@@ -22,4 +32,4 @@ Once you are ready, you can publish your code by running the following command:
 
 ```
 wrangler publish
-```
+``` -->

@@ -7,3 +7,5 @@ wrangler.toml
 
 static/dist/
 static/wrangler.toml
+
+.env
