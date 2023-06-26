@@ -147,13 +147,18 @@ router.post('/slack/slash', async request => {
         // Shuffling the users order
         const shuffledUsers = shuffle(users)
 
+        // Pick a random king
+        const kingIndex = Math.floor(Math.random() * users.length)
+
         // Giving each user a role
         const players = []
-        setup.forEach(role => {
+        setup.forEach((role, index) => {
             const user = shuffledUsers.pop()
+            const isKing = index === kingIndex
             players.push({
                 role,
                 user,
+                isKing,
             })
             console.log(`LOG user: ${user} is ${role}`)
         })
@@ -193,6 +198,8 @@ router.post('/slack/slash', async request => {
             await sendSlackMessage(player.user, roleMessges[player.role], images[player.role])
 
             let message = `\nYou are ${privateMessages[player.role]}\n`
+            if (player.isKing) message += '\nYou are the :crown: *KING* for this round\n'
+
             switch (player.role) {
                 case 'merlin':
                     // MERLIN can see all evil players, but not MORDRED
@@ -300,6 +307,9 @@ router.post('/slack/slash', async request => {
         })
         broadcastMessage += ` \n `
 
+        const king = shuffledPlayers.find(p => p.isKing)
+        broadcastMessage += `:crown: *KING* for this round is: ${king.user} \n\n`
+
         let story = '\n\n\n:star: :star: :star: \n\n'
         story += `As the night falls on *Avalon*, \n\n`
         story += `Hidden among *Arthur*'s brave warriors are *MORDRED*'s unscrupulous minions.\n`
@@ -352,6 +362,8 @@ are passed to the router where your routes are called and the response is sent.
 // })
 
 const server = Deno.listen({ port: 8080 });
+
+console.log(`Listening on http://localhost:8080`)
 
 for await (const conn of server) {
   const httpConn = Deno.serveHttp(conn);
