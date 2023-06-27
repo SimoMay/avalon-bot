@@ -3,10 +3,14 @@ import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { serveStatic } from "https://deno.land/x/hono@v3.2.6/middleware.ts";
 import "https://deno.land/x/dotenv@v3.2.0/load.ts";
 
-import shuffle from "./pkg/shuffle.js";
-import { defaultSetupRoles, defaultSpecialRoles, images } from "./defaults.ts";
-import { privateMessages, roleMessges } from "./messages.ts";
-import { logJson, sendSlackMessage } from "./helpers.ts";
+import {
+  defaultSetupRoles,
+  defaultSpecialRoles,
+  images,
+} from "./lib/defaults.ts";
+import { privateMessages, roleMessges } from "./lib/messages.ts";
+import { logJson, sendSlackMessage } from "./lib/helpers.ts";
+import shuffle from "./lib/shuffle.js";
 
 declare global {
   interface Array<T> {
@@ -24,7 +28,7 @@ Our index route, a simple hello world.
 */
 app.get(
   "/",
-  (c) => c.text("Hello, world! This is Avalon slack bot for K9 house. v1.6"),
+  (c) => c.text("Hello, world! This is Avalon slack bot for K9 house. v1.6.1"),
 );
 
 app.post("/slack/slash", async (c) => {
@@ -414,17 +418,15 @@ app.post("/slack/slash", async (c) => {
   return c.text("Error! No form received", 400);
 });
 
+// Static route for serving images
 app.use("/images/*", serveStatic({ root: "./" }));
 
-/*
-This route will match anything that hasn't hit a route we've defined
-above, therefore it's useful as a 404 (and avoids us hitting worker exceptions, so make sure to include it!).
-*/
-
+// 404 handler
 app.notFound((c) => {
   return c.text("404 Message, You lost buddy?", 404);
 });
 
+// Error handler
 app.onError((err, c) => {
   console.error(`${err}`);
   return c.text("Error! Something went very wrong", 500);
