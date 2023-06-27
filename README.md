@@ -1,6 +1,6 @@
 # Avalon Bot
 
-A slack bot assistant that helps you organize the board game
+A Slack bot assistant that helps you organize the board game
 `The Resistance: Avalon`, written in `Deno` and `TypeScript`.
 
 `Avalon` is a party board game of social deduction. Link to the game:
@@ -13,7 +13,7 @@ Rename `.env.example` to `.env` and fill in the values.
 To start the server:
 
 ```
-deno run --allow-env --allow-read --allow-net index.js
+deno run --allow-env --allow-read --allow-net index.ts
 ```
 
 Deploy and add the app to your Slack workspace/channel
@@ -29,13 +29,13 @@ Simply go to the channel and type:
 ```
 
 Each player will receive a direct message letting them know which character
-they’ll be playing, an image, also will mention any extra information the player
-need to know. (Special powers, etc)
+they’ll be playing, and an image, also will mention any extra information the player
+needs to know. (Special powers, etc)
 
-In the channel, the bot will mention the players, how many players are in the
+In the channel, the bot will mention the players, and how many players are in the
 game, good vs evil ratio, and who is the king/leader for the first round.
 
-### Overiding the default setup
+### Overriding the default setup
 
 The bot will use the default/recommended setup for the game mentioned in the
 link here: https://theresistanceavalon.com/rules
