@@ -10,7 +10,7 @@ import {
 } from "./lib/defaults.ts";
 import { privateMessages, roleMessges } from "./lib/messages.ts";
 import { logJson, sendSlackMessage } from "./lib/helpers.ts";
-import shuffle from "./lib/shuffle.js";
+import shuffle from "./lib/shuffle.ts";
 
 declare global {
   interface Array<T> {
