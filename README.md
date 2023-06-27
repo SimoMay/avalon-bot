@@ -6,6 +6,13 @@ A Slack bot assistant that helps you organize the board game
 `Avalon` is a party board game of social deduction. Link to the game:
 https://boardgamegeek.com/boardgame/128882/resistance-avalon
 
+When starting a game of `Avalon` with the bot, each player will receive a direct message letting them know which character
+they’ll be playing, and an image, also will mention any extra information the player
+needs to know. (Special powers, etc)
+
+In the main channel, the bot will mention the players, and how many players are in the
+game, good vs evil ratio, and who is the king/leader for the first round.
+
 ## Setup
 
 Rename `.env.example` to `.env` and fill in the values.
@@ -27,13 +34,6 @@ Simply go to the channel and type:
 ```
 /avalon @player1 @player2 @player3...
 ```
-
-Each player will receive a direct message letting them know which character
-they’ll be playing, and an image, also will mention any extra information the player
-needs to know. (Special powers, etc)
-
-In the channel, the bot will mention the players, and how many players are in the
-game, good vs evil ratio, and who is the king/leader for the first round.
 
 ### Overriding the default setup
 
