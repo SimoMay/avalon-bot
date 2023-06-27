@@ -28,7 +28,7 @@ Our index route, a simple hello world.
 */
 app.get(
   "/",
-  (c) => c.text("Hello, world! This is Avalon slack bot for K9 house. v1.6.1"),
+  (c) => c.text("Hello, world! This is Avalon slack bot for K9 house. v1.6.2"),
 );
 
 app.post("/slack/slash", async (c) => {
@@ -61,18 +61,16 @@ app.post("/slack/slash", async (c) => {
     logJson(users, "users");
 
     // Game validation, Avalon has min 5 players and 10 max
-    if (users.length < parseInt(Deno.env.get("MIN_PLAYERS") || "5")) {
+    const minPlayers = parseInt(Deno.env.get("MIN_PLAYERS") || "5");
+    const maxPlayers = parseInt(Deno.env.get("MAX_PLAYERS") || "10");
+    if (users.length < minPlayers) {
       return c.text(
-        `You need to be at least ${
-          Deno.env.get("MIN_PLAYERS") || "5"
-        } players!`,
+        `You need to be at least ${minPlayers} players!`,
       );
     }
-    if (users.length > parseInt(Deno.env.get("MAX_PLAYERS") || "10")) {
+    if (users.length > maxPlayers) {
       return c.text(
-        `You cannot be more than ${
-          Deno.env.get("MAX_PLAYERS") || "10"
-        } players!`,
+        `You cannot be more than ${maxPlayers} players!`,
       );
     }
 
